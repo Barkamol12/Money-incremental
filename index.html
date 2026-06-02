@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Clicker</title>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <style>
+        body { text-align: center; font-family: sans-serif; background: #0f172a; color: white; padding-top: 50px; }
+        .box { background: #1e293b; padding: 30px; border-radius: 15px; width: 300px; margin: 0 auto; }
+        button { width: 97%; padding: 12px; background: #0ea5e9; color: white; border: none; border-radius: 6px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div id="auth" class="box">
+        <h3>Вход</h3>
+        <input type="text" id="nick" placeholder="Твой ник">
+        <button onclick="login()">Войти</button>
+    </div>
+    <div id="game" class="box" style="display:none;">
+        <h1 id="name"></h1>
+        <h2 id="coins">Монеты: 0</h2>
+        <button onclick="clickBtn()">КЛИК!</button>
+    </div>
+    <script>
+        firebase.initializeApp({databaseURL: "https://money-incremental-default-rtdb.firebaseio.com"});
+        const db = firebase.database();
+        let myNick = "";
+        let coins = 0;
+
+        function login() {
+            myNick = document.getElementById('nick').value.trim();
+            if(!myNick) return;
+            document.getElementById('auth').style.display = 'none';
+            document.getElementById('game').style.display = 'block';
+            document.getElementById('name').innerText = myNick;
+            
+            db.ref('players/' + myNick).on('value', (s) => {
+                coins = s.val() ? s.val().coins : 0;
+                document.getElementById('coins').innerText = "Монеты: " + Math.floor(coins);
+            });
+        }
+
+        function clickBtn() {
+            coins++;
+            db.ref('players/' + myNick).set({coins: coins});
+        }
+    </script>
+</body>
+</html>
