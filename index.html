@@ -2,49 +2,61 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Clicker</title>
+    <title>Football Clicker</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <style>
-        body { text-align: center; font-family: sans-serif; background: #0f172a; color: white; padding-top: 50px; }
-        .box { background: #1e293b; padding: 30px; border-radius: 15px; width: 300px; margin: 0 auto; }
-        button { width: 97%; padding: 12px; background: #0ea5e9; color: white; border: none; border-radius: 6px; cursor: pointer; }
+        body { text-align: center; font-family: sans-serif; background: #064e3b; color: white; padding-top: 50px; }
+        .box { background: #065f46; padding: 30px; border-radius: 15px; width: 350px; margin: 0 auto; border: 2px solid #34d399; }
+        button { margin: 10px; padding: 12px 20px; cursor: pointer; border-radius: 8px; border: none; background: #34d399; font-weight: bold; }
     </style>
 </head>
 <body>
     <div id="auth" class="box">
-        <h3>Вход</h3>
-        <input type="text" id="nick" placeholder="Твой ник">
+        <h3>Вход в клуб</h3>
+        <input type="text" id="nick" placeholder="Имя игрока">
         <button onclick="login()">Войти</button>
     </div>
     <div id="game" class="box" style="display:none;">
-        <h1 id="name"></h1>
-        <h2 id="coins">Монеты: 0</h2>
-        <button onclick="clickBtn()">КЛИК!</button>
+        <h2 id="name"></h2>
+        <p>💰 Бюджет: <span id="coins">0</span></p>
+        <p>⚽ Тренировки: <span id="training">0</span></p>
+        <p>🏃 Футболисты: <span id="playersCount">0</span></p>
+        <hr>
+        <button onclick="clickTrain()">На тренировку</button>
+        <button onclick="buyPlayer()">Купить игрока (50 монет)</button>
     </div>
     <script>
         firebase.initializeApp({databaseURL: "https://money-incremental-default-rtdb.firebaseio.com"});
         const db = firebase.database();
-        let myNick = "";
-        let coins = 0;
+        let myNick = "", data = {coins: 0, training: 0, playersCount: 0};
 
         function login() {
             myNick = document.getElementById('nick').value.trim();
             if(!myNick) return;
             document.getElementById('auth').style.display = 'none';
             document.getElementById('game').style.display = 'block';
-            document.getElementById('name').innerText = myNick;
+            document.getElementById('name').innerText = "Клуб: " + myNick;
             
             db.ref('players/' + myNick).on('value', (s) => {
-                coins = s.val() ? s.val().coins : 0;
-                document.getElementById('coins').innerText = "Монеты: " + Math.floor(coins);
+                if(s.exists()) data = s.val();
+                document.getElementById('coins').innerText = Math.floor(data.coins);
+                document.getElementById('training').innerText = Math.floor(data.training);
+                document.getElementById('playersCount').innerText = data.playersCount;
             });
         }
-
-        function clickBtn() {
-            coins++;
-            db.ref('players/' + myNick).set({coins: coins});
+        function clickTrain() { data.training++; updateDB(); }
+        function buyPlayer() {
+            if(data.coins >= 50) { data.coins -= 50; data.playersCount++; updateDB(); }
         }
+        function updateDB() { db.ref('players/' + myNick).set(data); }
+        
+        setInterval(() => {
+            if(myNick && data.playersCount > 0) {
+                data.coins += data.playersCount * 0.5;
+                updateDB();
+            }
+        }, 1000);
     </script>
 </body>
 </html>
