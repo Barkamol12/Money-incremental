@@ -31,6 +31,14 @@
         const db = firebase.database();
         let myNick = "", data = {coins: 0, training: 0, playersCount: 0};
 
+        function fixData(d) {
+            return {
+                coins: (d.coins && !isNaN(d.coins)) ? d.coins : 0,
+                training: (d.training && !isNaN(d.training)) ? d.training : 0,
+                playersCount: (d.playersCount && !isNaN(d.playersCount)) ? d.playersCount : 0
+            };
+        }
+
         function login() {
             myNick = document.getElementById('nick').value.trim();
             if(!myNick) return;
@@ -39,21 +47,33 @@
             document.getElementById('name').innerText = "Клуб: " + myNick;
             
             db.ref('players/' + myNick).on('value', (s) => {
-                if(s.exists()) data = s.val();
+                if(s.exists()) data = fixData(s.val());
                 document.getElementById('coins').innerText = Math.floor(data.coins);
                 document.getElementById('training').innerText = Math.floor(data.training);
-                document.getElementById('playersCount').innerText = data.playersCount;
+                document.getElementById('playersCount').innerText = Math.floor(data.playersCount);
             });
         }
-        function clickTrain() { data.training++; updateDB(); }
-        function buyPlayer() {
-            if(data.coins >= 50) { data.coins -= 50; data.playersCount++; updateDB(); }
+
+        function clickTrain() { 
+            data.training++; 
+            updateDB(); 
         }
-        function updateDB() { db.ref('players/' + myNick).set(data); }
+
+        function buyPlayer() {
+            if(data.coins >= 50) { 
+                data.coins -= 50; 
+                data.playersCount++; 
+                updateDB(); 
+            }
+        }
+
+        function updateDB() { 
+            db.ref('players/' + myNick).set(data); 
+        }
         
         setInterval(() => {
-            if(myNick && data.playersCount > 0) {
-                data.coins += data.playersCount * 0.5;
+            if(myNick) {
+                data.coins += (data.playersCount * 0.5);
                 updateDB();
             }
         }, 1000);
