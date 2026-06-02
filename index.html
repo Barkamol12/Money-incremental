@@ -6,18 +6,47 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <style>
-        body { text-align: center; font-family: sans-serif; background: #064e3b; color: white; padding-top: 20px; }
-        .box { background: #065f46; padding: 20px; border-radius: 15px; width: 350px; margin: 0 auto; border: 2px solid #34d399; }
-        button { margin: 5px; padding: 10px; cursor: pointer; border-radius: 6px; border: none; background: #34d399; font-weight: bold; width: 90%; }
-        .match-btn { background: #e11d48; color: white; }
-        .shop-btn { background: #fbbf24; color: black; }
-        .upgrade-btn { background: #3b82f6; color: white; }
+        body { 
+            text-align: center; 
+            font-family: 'Segoe UI', sans-serif; 
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6); 
+            color: white; 
+            min-height: 100vh;
+            margin: 0;
+            padding-top: 20px;
+        }
+        .box { 
+            background: rgba(30, 58, 138, 0.8); 
+            padding: 20px; 
+            border-radius: 20px; 
+            width: 380px; 
+            margin: 0 auto; 
+            border: 2px solid #60a5fa;
+            backdrop-filter: blur(10px);
+        }
+        button { 
+            margin: 5px; 
+            padding: 12px; 
+            cursor: pointer; 
+            border-radius: 8px; 
+            border: none; 
+            background: #2563eb; 
+            color: white;
+            font-weight: bold; 
+            width: 90%; 
+            transition: 0.2s;
+        }
+        button:hover { background: #3b82f6; }
+        .match-btn { background: #e11d48; }
+        .match-btn:hover { background: #be123c; }
+        .shop-btn { background: #d97706; }
+        .upgrade-btn { background: #059669; }
     </style>
 </head>
 <body>
     <div id="auth" class="box">
         <h3>Вход в клуб</h3>
-        <input type="text" id="nick" placeholder="Имя игрока">
+        <input type="text" id="nick" placeholder="Имя игрока" style="padding: 8px; border-radius: 5px; border: none;">
         <button onclick="login()">Войти</button>
     </div>
     <div id="game" class="box" style="display:none;">
@@ -26,16 +55,17 @@
         <p>⚽ Тренировки: <span id="training">0</span></p>
         <p>📈 Сила клика: <span id="clickPower">1</span></p>
         <hr>
-        <button onclick="clickTrain()">Тренироваться (+1 к тренировкам)</button>
+        <p>🏃 Игроки: <span id="playersCount">0</span> (0.5/сек)</p>
+        <p>🌟 Роналду: <span id="ronaldo">0</span> (1000/сек)</p>
+        <hr>
+        <button onclick="clickTrain()">Тренироваться</button>
         <button class="upgrade-btn" onclick="upgradeClick()">Улучшить клик (100 монет)</button>
+        <button class="shop-btn" onclick="buyPlayer()">Купить игрока (50 монет)</button>
         <hr>
-        <h3>Магазин:</h3>
-        <button class="shop-btn" onclick="buyPlayer()">Игрок (50 монет)</button>
-        <hr>
-        <h3>Матчи:</h3>
-        <button class="match-btn" onclick="playMatch('barca')">Barcelona (Easy) - 50 монет</button>
-        <button class="match-btn" onclick="playMatch('city')">Man City (Med) - 500 монет</button>
-        <button class="match-btn" onclick="playMatch('real')">Real Madrid (Imp) - Роналду</button>
+        <h3>Матчи (Реком. уровень):</h3>
+        <button class="match-btn" onclick="playMatch('barca')">Barcelona (100 трен.) - 50 монет</button>
+        <button class="match-btn" onclick="playMatch('city')">Man City (1000 трен.) - 500 монет</button>
+        <button class="match-btn" onclick="playMatch('real')">Real Madrid (100к трен.) - Роналду</button>
     </div>
     <script>
         firebase.initializeApp({databaseURL: "https://money-incremental-default-rtdb.firebaseio.com"});
@@ -53,16 +83,16 @@
                 if(s.exists()) {
                     let d = s.val();
                     data = { 
-                        coins: d.coins || 0, 
-                        training: d.training || 0, 
-                        playersCount: d.playersCount || 0, 
-                        ronaldo: d.ronaldo || 0,
+                        coins: d.coins || 0, training: d.training || 0, 
+                        playersCount: d.playersCount || 0, ronaldo: d.ronaldo || 0,
                         clickPower: d.clickPower || 1
                     };
                 }
                 document.getElementById('coins').innerText = Math.floor(data.coins);
                 document.getElementById('training').innerText = Math.floor(data.training);
                 document.getElementById('clickPower').innerText = data.clickPower;
+                document.getElementById('playersCount').innerText = data.playersCount;
+                document.getElementById('ronaldo').innerText = data.ronaldo;
             });
         }
         
@@ -70,7 +100,7 @@
         
         function upgradeClick() {
             if(data.coins >= 100) { data.coins -= 100; data.clickPower++; updateDB(); }
-            else { alert("Мало монет для апгрейда!"); }
+            else { alert("Мало монет!"); }
         }
         
         function buyPlayer() {
