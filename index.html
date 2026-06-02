@@ -10,6 +10,8 @@
         .box { background: #065f46; padding: 20px; border-radius: 15px; width: 350px; margin: 0 auto; border: 2px solid #34d399; }
         button { margin: 5px; padding: 10px; cursor: pointer; border-radius: 6px; border: none; background: #34d399; font-weight: bold; width: 90%; }
         .match-btn { background: #e11d48; color: white; }
+        .shop-btn { background: #fbbf24; color: black; }
+        .upgrade-btn { background: #3b82f6; color: white; }
     </style>
 </head>
 <body>
@@ -22,19 +24,23 @@
         <h2 id="name"></h2>
         <p>💰 Бюджет: <span id="coins">0</span></p>
         <p>⚽ Тренировки: <span id="training">0</span></p>
-        <p>🏃 Игроки: <span id="playersCount">0</span> | 🌟 Роналду: <span id="ronaldo">0</span></p>
+        <p>📈 Сила клика: <span id="clickPower">1</span></p>
         <hr>
-        <button onclick="clickTrain()">Тренироваться (+1)</button>
+        <button onclick="clickTrain()">Тренироваться (+1 к тренировкам)</button>
+        <button class="upgrade-btn" onclick="upgradeClick()">Улучшить клик (100 монет)</button>
+        <hr>
+        <h3>Магазин:</h3>
+        <button class="shop-btn" onclick="buyPlayer()">Игрок (50 монет)</button>
         <hr>
         <h3>Матчи:</h3>
-        <button class="match-btn" onclick="playMatch('barca')">Barcelona (Easy) - 50 монет (Тренировок: 100)</button>
-        <button class="match-btn" onclick="playMatch('city')">Man City (Med) - 500 монет (Тренировок: 1000)</button>
-        <button class="match-btn" onclick="playMatch('real')">Real Madrid (Imp) - Ronaldo (Тренировок: 100000)</button>
+        <button class="match-btn" onclick="playMatch('barca')">Barcelona (Easy) - 50 монет</button>
+        <button class="match-btn" onclick="playMatch('city')">Man City (Med) - 500 монет</button>
+        <button class="match-btn" onclick="playMatch('real')">Real Madrid (Imp) - Роналду</button>
     </div>
     <script>
         firebase.initializeApp({databaseURL: "https://money-incremental-default-rtdb.firebaseio.com"});
         const db = firebase.database();
-        let myNick = "", data = {coins: 0, training: 0, playersCount: 0, ronaldo: 0};
+        let myNick = "", data = {coins: 0, training: 0, playersCount: 0, ronaldo: 0, clickPower: 1};
 
         function login() {
             myNick = document.getElementById('nick').value.trim();
@@ -46,17 +52,32 @@
             db.ref('players/' + myNick).on('value', (s) => {
                 if(s.exists()) {
                     let d = s.val();
-                    data = { coins: d.coins || 0, training: d.training || 0, playersCount: d.playersCount || 0, ronaldo: d.ronaldo || 0 };
+                    data = { 
+                        coins: d.coins || 0, 
+                        training: d.training || 0, 
+                        playersCount: d.playersCount || 0, 
+                        ronaldo: d.ronaldo || 0,
+                        clickPower: d.clickPower || 1
+                    };
                 }
                 document.getElementById('coins').innerText = Math.floor(data.coins);
                 document.getElementById('training').innerText = Math.floor(data.training);
-                document.getElementById('playersCount').innerText = data.playersCount;
-                document.getElementById('ronaldo').innerText = data.ronaldo;
+                document.getElementById('clickPower').innerText = data.clickPower;
             });
         }
         
-        function clickTrain() { data.training++; updateDB(); }
+        function clickTrain() { data.training += data.clickPower; updateDB(); }
         
+        function upgradeClick() {
+            if(data.coins >= 100) { data.coins -= 100; data.clickPower++; updateDB(); }
+            else { alert("Мало монет для апгрейда!"); }
+        }
+        
+        function buyPlayer() {
+            if(data.coins >= 50) { data.coins -= 50; data.playersCount++; updateDB(); }
+            else { alert("Мало монет!"); }
+        }
+
         function playMatch(team) {
             if(team === 'barca' && data.training >= 100) { data.training -= 100; data.coins += 50; }
             else if(team === 'city' && data.training >= 1000) { data.training -= 1000; data.coins += 500; }
