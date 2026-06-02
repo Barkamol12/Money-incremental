@@ -8,11 +8,8 @@
     <style>
         body { text-align: center; font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #1e3a8a, #3b82f6); color: white; min-height: 100vh; margin: 0; padding-top: 20px; }
         .box { background: rgba(30, 58, 138, 0.8); padding: 20px; border-radius: 20px; width: 400px; margin: 0 auto; border: 2px solid #60a5fa; backdrop-filter: blur(10px); }
-        button { margin: 5px; padding: 10px; cursor: pointer; border-radius: 8px; border: none; background: #2563eb; color: white; font-weight: bold; width: 90%; transition: 0.2s; }
-        button:hover { background: #3b82f6; }
-        .match-btn { background: #e11d48; }
-        .shop-btn { background: #d97706; }
-        .upgrade-btn { background: #059669; }
+        button { margin: 5px; padding: 10px; cursor: pointer; border-radius: 8px; border: none; background: #2563eb; color: white; font-weight: bold; width: 90%; }
+        .leaderboard { margin-top: 15px; text-align: left; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 10px; }
     </style>
 </head>
 <body>
@@ -23,26 +20,18 @@
     </div>
     <div id="game" class="box" style="display:none;">
         <h2 id="name"></h2>
-        <p>💰 Бюджет: <span id="coins">0</span></p>
-        <p>⚽ Тренировки: <span id="training">0</span></p>
-        <hr>
-        <p>📈 Сила клика: <span id="clickPower">1</span></p>
-        <p>🤖 Автокликер: <span id="autoPower">0</span> трен/сек</p>
+        <p>💰 Монеты: <span id="coins">0</span></p>
+        <button onclick="showLeaderboard()">Показать таблицу лидеров</button>
+        <div id="leaderboardDiv" class="leaderboard" style="display:none;"></div>
         <hr>
         <button onclick="clickTrain()">Тренироваться</button>
-        <button class="upgrade-btn" onclick="upgradeClick()">Улучшить клик (100 монет)</button>
-        <button class="upgrade-btn" onclick="upgradeAuto()">Улучшить автокликер (200 монет)</button>
-        <button class="shop-btn" onclick="buyPlayer()">Купить игрока (50 монет)</button>
-        <hr>
-        <h3>Матчи (Реком. уровень):</h3>
-        <button class="match-btn" onclick="playMatch('barca')">Barcelona (100 трен.)</button>
-        <button class="match-btn" onclick="playMatch('city')">Man City (1000 трен.)</button>
-        <button class="match-btn" onclick="playMatch('real')">Real Madrid (100к трен.)</button>
+        <button onclick="upgradeClick()">Улучшить клик (100 монет)</button>
+        <button onclick="playMatch('barca')">Barcelona (100 трен.)</button>
     </div>
     <script>
         firebase.initializeApp({databaseURL: "https://money-incremental-default-rtdb.firebaseio.com"});
         const db = firebase.database();
-        let myNick = "", data = {coins: 0, training: 0, playersCount: 0, ronaldo: 0, clickPower: 1, autoPower: 0};
+        let myNick = "", data = {coins: 0, training: 0, clickPower: 1};
 
         function login() {
             myNick = document.getElementById('nick').value.trim();
@@ -50,51 +39,34 @@
             document.getElementById('auth').style.display = 'none';
             document.getElementById('game').style.display = 'block';
             document.getElementById('name').innerText = "Клуб: " + myNick;
-            
             db.ref('players/' + myNick).on('value', (s) => {
-                if(s.exists()) {
-                    let d = s.val();
-                    data = { 
-                        coins: d.coins || 0, training: d.training || 0, 
-                        playersCount: d.playersCount || 0, ronaldo: d.ronaldo || 0,
-                        clickPower: d.clickPower || 1, autoPower: d.autoPower || 0
-                    };
-                }
+                if(s.exists()) data = s.val();
                 document.getElementById('coins').innerText = Math.floor(data.coins);
-                document.getElementById('training').innerText = Math.floor(data.training);
-                document.getElementById('clickPower').innerText = data.clickPower;
-                document.getElementById('autoPower').innerText = data.autoPower;
             });
         }
-        
+
+        function showLeaderboard() {
+            let div = document.getElementById('leaderboardDiv');
+            div.style.display = 'block';
+            div.innerHTML = "Загрузка...";
+            db.ref('players').orderByChild('coins').limitToLast(5).once('value', (s) => {
+                div.innerHTML = "<h4>Топ 5 богачей:</h4>";
+                let players = [];
+                s.forEach(child => { players.push({name: child.key, coins: child.val().coins}); });
+                players.reverse().forEach((p, i) => {
+                    div.innerHTML += `${i+1}. ${p.name}: ${Math.floor(p.coins)} монет<br>`;
+                });
+            });
+        }
+
         function clickTrain() { data.training += data.clickPower; updateDB(); }
-        
-        function upgradeClick() {
-            if(data.coins >= 100) { data.coins -= 100; data.clickPower++; updateDB(); }
-        }
-        
-        function upgradeAuto() {
-            if(data.coins >= 200) { data.coins -= 200; data.autoPower++; updateDB(); }
-        }
-        
-        function buyPlayer() {
-            if(data.coins >= 50) { data.coins -= 50; data.playersCount++; updateDB(); }
-        }
-
-        function playMatch(team) {
-            if(team === 'barca' && data.training >= 100) { data.training -= 100; data.coins += 50; }
-            else if(team === 'city' && data.training >= 1000) { data.training -= 1000; data.coins += 500; }
-            else if(team === 'real' && data.training >= 100000) { data.training -= 100000; data.ronaldo++; }
-            updateDB();
-        }
-
+        function upgradeClick() { if(data.coins >= 100) { data.coins -= 100; data.clickPower++; updateDB(); } }
+        function playMatch(t) { if(t === 'barca' && data.training >= 100) { data.training -= 100; data.coins += 50; updateDB(); } }
         function updateDB() { db.ref('players/' + myNick).set(data); }
         
-        // Автосохранение и прогресс каждую секунду
         setInterval(() => {
             if(myNick) {
-                data.training += data.autoPower; // Автокликер работает
-                data.coins += (data.playersCount * 0.5) + (data.ronaldo * 1000);
+                data.coins += (data.playersCount || 0) * 0.5;
                 updateDB();
             }
         }, 1000);
