@@ -2,36 +2,39 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Football Manager</title>
+    <title>Football Manager Pro</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <style>
-        body { text-align: center; font-family: 'Segoe UI', sans-serif; background: #064e3b; color: white; padding-top: 30px; }
-        .box { background: #065f46; padding: 20px; border-radius: 20px; width: 320px; margin: 0 auto; border: 2px solid #34d399; }
-        button { margin: 8px; padding: 10px; cursor: pointer; border-radius: 10px; border: none; background: #34d399; font-weight: bold; width: 90%; }
-        button:hover { background: #10b981; }
+        body { text-align: center; font-family: sans-serif; background: #064e3b; color: white; padding-top: 20px; }
+        .box { background: #065f46; padding: 20px; border-radius: 15px; width: 350px; margin: 0 auto; border: 2px solid #34d399; }
+        button { margin: 5px; padding: 10px; cursor: pointer; border-radius: 6px; border: none; background: #34d399; font-weight: bold; width: 90%; }
+        .match-btn { background: #e11d48; color: white; }
     </style>
 </head>
 <body>
     <div id="auth" class="box">
         <h3>Вход в клуб</h3>
-        <input type="text" id="nick" placeholder="Имя клуба">
+        <input type="text" id="nick" placeholder="Имя игрока">
         <button onclick="login()">Войти</button>
     </div>
     <div id="game" class="box" style="display:none;">
         <h2 id="name"></h2>
         <p>💰 Бюджет: <span id="coins">0</span></p>
         <p>⚽ Тренировки: <span id="training">0</span></p>
-        <p>🏃 Футболисты: <span id="playersCount">0</span></p>
+        <p>🏃 Игроки: <span id="playersCount">0</span> | 🌟 Роналду: <span id="ronaldo">0</span></p>
         <hr>
-        <button onclick="clickTrain()">На тренировку (+1)</button>
-        <button onclick="buyPlayer()">Купить игрока (50 монет)</button>
-        <button onclick="buyStar()" style="background: #fbbf24;">Купить ЗВЕЗДУ (200 монет)</button>
+        <button onclick="clickTrain()">Тренироваться (+1)</button>
+        <hr>
+        <h3>Матчи:</h3>
+        <button class="match-btn" onclick="playMatch('barca')">Barcelona (Easy) - 50 монет (Тренировок: 100)</button>
+        <button class="match-btn" onclick="playMatch('city')">Man City (Med) - 500 монет (Тренировок: 1000)</button>
+        <button class="match-btn" onclick="playMatch('real')">Real Madrid (Imp) - Ronaldo (Тренировок: 100000)</button>
     </div>
     <script>
         firebase.initializeApp({databaseURL: "https://money-incremental-default-rtdb.firebaseio.com"});
         const db = firebase.database();
-        let myNick = "", data = {coins: 0, training: 0, playersCount: 0, starsCount: 0};
+        let myNick = "", data = {coins: 0, training: 0, playersCount: 0, ronaldo: 0};
 
         function login() {
             myNick = document.getElementById('nick').value.trim();
@@ -43,26 +46,30 @@
             db.ref('players/' + myNick).on('value', (s) => {
                 if(s.exists()) {
                     let d = s.val();
-                    data = {
-                        coins: d.coins || 0,
-                        training: d.training || 0,
-                        playersCount: d.playersCount || 0,
-                        starsCount: d.starsCount || 0
-                    };
+                    data = { coins: d.coins || 0, training: d.training || 0, playersCount: d.playersCount || 0, ronaldo: d.ronaldo || 0 };
                 }
                 document.getElementById('coins').innerText = Math.floor(data.coins);
                 document.getElementById('training').innerText = Math.floor(data.training);
-                document.getElementById('playersCount').innerText = data.playersCount + " (" + data.starsCount + " звезд)";
+                document.getElementById('playersCount').innerText = data.playersCount;
+                document.getElementById('ronaldo').innerText = data.ronaldo;
             });
         }
+        
         function clickTrain() { data.training++; updateDB(); }
-        function buyPlayer() { if(data.coins >= 50) { data.coins -= 50; data.playersCount++; updateDB(); } }
-        function buyStar() { if(data.coins >= 200) { data.coins -= 200; data.starsCount++; updateDB(); } }
+        
+        function playMatch(team) {
+            if(team === 'barca' && data.training >= 100) { data.training -= 100; data.coins += 50; }
+            else if(team === 'city' && data.training >= 1000) { data.training -= 1000; data.coins += 500; }
+            else if(team === 'real' && data.training >= 100000) { data.training -= 100000; data.ronaldo++; }
+            else { alert("Недостаточно тренировок!"); return; }
+            updateDB();
+        }
+
         function updateDB() { db.ref('players/' + myNick).set(data); }
         
         setInterval(() => {
             if(myNick) {
-                data.coins += (data.playersCount * 0.5) + (data.starsCount * 3);
+                data.coins += (data.playersCount * 0.5) + (data.ronaldo * 1000);
                 updateDB();
             }
         }, 1000);
