@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Global Keyboard Clicker</title>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    
+    <style>
+        body { 
+            text-align: center; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); 
+            color: white;
+            min-height: 100vh;
+            margin: 0;
+            padding-top: 30px;
+            user-select: none;
+        }
+
+        /* Клик по названию открывает админку */
+        h1 {
+            font-size: 32px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            margin-bottom: 5px;
+            color: #38bdf8; 
+            cursor: pointer;
+        }
+
+        /* Окно авторизации при входе */
+        #authScreen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #0f172a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .auth-box {
+            background: #1e293b;
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid #334155;
+            width: 300px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+        .auth-box h3 { margin-top: 0; color: #38bdf8; }
+        .auth-box input {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 6px;
+            border: 1px solid #334155;
+            background: #0f172a;
+            color: white;
+            font-size: 16px;
+        }
+        .auth-btn {
+            width: 97%;
+            padding: 12px;
+            background: #0ea5e9;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        /* Главная сетка: Игра слева, лидерборд справа */
+        .game-layout {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            max-width: 950px;
+            margin: 0 auto;
+            padding: 20px;
+            flex-wrap: wrap;
+        }
+
+        .main-col { flex: 1.5; min-width: 320px; }
+        .side-col { flex: 1; min-width: 280px; }
+
+        .score-board {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 15px 20px;
+            display: block;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        h2 { margin: 0; font-size: 28px; color: #fbbf24; } 
+        .stats-desc { margin: 5px 0 0 0; opacity: 0.8; font-size: 14px; color: #94a3b8; }
+
+        #clickBtn { 
+            display: block;
+            margin: 0 auto;
+            width: 150px;
+            height: 150px;
+            border-radius: 20px; 
+            font-size: 26px; 
+            font-weight: bold;
+            cursor: pointer; 
+            background: linear-gradient(145deg, #0284c7, #0369a1); 
+            color: white; 
+            border: 1px solid #0ea5e9;
+            box-shadow: 0 12px 0 #075985, 0 15px 20px rgba(0,0,0,0.6);
+            transition: all 0.04s ease;
+            outline: none;
+        }
+        #clickBtn:active { transform: translateY(10px); box-shadow: 0 2px 0 #075985, 0 3px 10px rgba(0,0,0,0.7); }
+
+        #openMenuBtn {
+            margin-top: 25px; padding: 12px 24px; font-size: 16px; font-weight: bold;
+            color: white; background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            border: 1px solid #60a5fa; border-radius: 10px; cursor: pointer; width: 100%;
+        }
+
+        /* ТАБЛИЦА ЛИДЕРОВ */
+        .leaderboard {
+            background: #1e293b;
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid #334155;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+            text-align: left;
+        }
+        .leaderboard h3 { margin: 0 0 15px 0; color: #38bdf8; border-bottom: 1px solid #334155; padding-bottom: 10px; }
+        
+        .leader-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 5px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            font-size: 16px;
+        }
+        .leader-row.current-user { color: #fbbf24; font-weight: bold; background: rgba(251,191,36,0.05); border-radius: 4px; }
+
+        /* МАГАЗИН ПРОКАЧЕК */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(4px);
+            display: none; justify-content: center; align-items: center; z-index: 100;
+        }
+        .shop-container { width: 360px; background: #1e293b; border-radius: 20px; border: 1px solid #334155; overflow: hidden; }
+        .tab-menu { display: flex; background: #0f172a; }
+        .tab-btn { flex: 1; padding: 14px; background: transparent; color: #94a3b8; border: none; font-weight: bold; cursor: pointer; }
+        .tab-btn.active { color: #38bdf8; background: #1e293b; border-bottom: 2px solid #38bdf8; }
+        .tab-content { padding: 20px; display: none; }
+        .tab-content.active { display: block; }
+        .upgrade-item { background: rgba(255,255,255,0.03); border-radius: 10px; padding: 12px; margin-bottom: 12px; text-align: left; }
+        .upgrade-btn { width: 100%; padding: 10px; font-weight: bold; color: white; border: none; border-radius: 6px; cursor: pointer; }
+        .click-color { background: #0284c7; }
+        .macros-color { background: #16a34a; }
+        #closeMenuBtn { width: 100%; padding: 12px; background: #334155; color: white; border: none; font-weight: bold; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <div id="authScreen">
+        <div class="auth-box">
+            <h3>Вход в Мультиплеер</h3>
+            <input type="text" id="usernameInput" placeholder="Придумай Ник" maxlength="14">
+            <input type="password" id="passwordInput" placeholder="Придумай Пароль">
+            <button class="auth-btn" id="loginBtn">Войти в Игру</button>
+        </div>
+    </div>
+
+    <h1 id="gameTitle">Mechanical Online Clicker</h1>
+    <p id="welcomeText" style="color: #38bdf8; font-weight: bold; margin: 0;"></p>
+    
+    <div class="game-layout">
+        <div class="main-col">
+            <div class="score-board">
+                <h2 id="money">Монеты: 0</h2>
+                <div class="stats-desc" id="statsDisplay">Клик: +1 | Авто: 0/сек</div>
+            </div>
+            <button id="clickBtn">CLICK</button>
+            <button id="openMenuBtn">Дерево прокачек</button>
+        </div>
+
+        <div class="side-col">
+            <div class="leaderboard">
+                <h3>Таблица Лидеров 🏆</h3>
+                <div id="leaderboardList">
+                    <div style="color: #64748b;">Подключение к серверу...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalMenu" class="modal-overlay">
+        <div class="shop-container">
+            <div class="tab-menu"><button class="tab-btn active">Прокачка</button></div>
+            <div class="tab-content active">
+                <div class="upgrade-item">
+                    <h4 style="color: #38bdf8;">Сила пальца</h4>
+                    <button id="upClickBtn" class="upgrade-btn click-color">Прокачать</button>
+                </div>
+                <div class="upgrade-item">
+                    <h4 style="color: #22c55e;">Макросы</h4>
+                    <button id="upMacrosBtn" class="upgrade-btn macros-color">Прокачать</button>
+                </div>
+            </div>
+            <button id="closeMenuBtn">Закрыть меню</button>
+        </div>
+    </div>
+
+    <script>
+        // ========================================================
+        // СЮДА ТЕБЕ НАДО ВСТАВИТЬ СВОИ ДАННЫЕ ИЗ ШАГА 2 И 3:
+        // ========================================================
+        const firebaseConfig = {
+            databaseURL: "https://money-incremental-default-rtdb.firebaseio.com", 
+            projectId: "money-incremental"
+        };
+        // ========================================================
+
+        // Инициализация
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        let myName = "";
+        let gameState = {
+            coins: 0, clickPower: 1, passiveIncome: 0,
+            priceClick: 10, priceMacros: 10, password: ""
+        };
+
+        const modal = document.getElementById('modalMenu');
+        document.getElementById('openMenuBtn').onclick = () => modal.style.display = 'flex';
+        document.getElementById('closeMenuBtn').onclick = () => modal.style.display = 'none';
+
+        document.getElementById('loginBtn').onclick = function() {
+            let user = document.getElementById('usernameInput').value.trim();
+            let pass = document.getElementById('passwordInput').value.trim();
+
+            if(!user || !pass) { alert("Заполни ник и пароль!"); return; }
+            myName = user;
+
+            db.ref('clicker_players/' + myName).once('value').then((snapshot) => {
+                let data = snapshot.val();
+                if(data) {
+                    if(data.password === pass) {
+                        gameState = data;
+                    } else {
+                        alert("Этот ник занят!");
+                        return;
+                    }
+                } else {
+                    gameState.password = pass;
+                    db.ref('clicker_players/' + myName).set(gameState);
+                }
+
+                document.getElementById('authScreen').style.display = 'none';
+                document.getElementById('welcomeText').innerText = `Игрок: ${myName}`;
+                
+                updateUI();
+                listenLeaderboard();
+            }).catch(e => alert("Ошибка! Проверь Rules в Firebase: " + e.message));
+        };
+
+        function sync() {
+            if(myName) db.ref('clicker_players/' + myName).set(gameState);
+        }
+
+        function updateUI() {
+            document.getElementById('money').innerText = "Монеты: " + Math.floor(gameState.coins);
+            document.getElementById('statsDisplay').innerText = `Клик: +${gameState.clickPower} | Авто: ${gameState.passiveIncome}/сек`;
+            document.getElementById('upClickBtn').innerText = `Прокачать (Цена: ${gameState.priceClick})`;
+            document.getElementById('upMacrosBtn').innerText = `Прокачать (Цена: ${gameState.priceMacros})`;
+        }
+
+        document.getElementById('clickBtn').onclick = function() {
+            gameState.coins += gameState.clickPower;
+            updateUI();
+            sync();
+        };
+
+        document.getElementById('upClickBtn').onclick = function() {
+            if (gameState.coins >= gameState.priceClick) {
+                gameState.coins -= gameState.priceClick;
+                gameState.clickPower += 1;
+                gameState.priceClick = Math.round(gameState.priceClick * 1.7);
+                updateUI();
+                sync();
+            } else { alert("Не хватает монет!"); }
+        };
+
+        document.getElementById('upMacrosBtn').onclick = function() {
+            if (gameState.coins >= gameState.priceMacros) {
+                gameState.coins -= gameState.priceMacros;
+                gameState.passiveIncome += 1;
+                gameState.priceMacros = Math.round(gameState.priceMacros * 1.6);
+                updateUI();
+                sync();
+            } else { alert("Не хватает монет!"); }
+        };
+
+        setInterval(function() {
+            if(myName) {
+                gameState.coins += gameState.passiveIncome;
+                updateUI();
+                db.ref('clicker_players/' + myName + '/coins').set(gameState.coins);
+            }
+        }, 1000);
+
+        function listenLeaderboard() {
+            db.ref('clicker_players').on('value', (snapshot) => {
+                const playersData = snapshot.val();
+                if(!playersData) return;
+
+                let list = [];
+                for(let name in playersData) {
+                    list.push({ name: name, coins: playersData[name].coins || 0 });
+                }
+                list.sort((a, b) => b.coins - a.coins);
+
+                const container = document.getElementById('leaderboardList');
+                container.innerHTML = "";
+
+                list.forEach((p, index) => {
+                    let row = document.createElement('div');
+                    row.className = "leader-row";
+                    if(p.name === myName) row.className += " current-user";
+                    row.innerHTML = `<span>${index + 1}. ${p.name}</span> <span>${Math.floor(p.coins)} 💰</span>`;
+                    container.appendChild(row);
+                });
+            });
+        }
+
+        // АДМИНКА
+        document.getElementById('gameTitle').onclick = function() {
+            let target = prompt("Ник игрока:");
+            if(!target) return;
+            let amount = parseInt(prompt("Сколько миллионов дать?"));
+            if(isNaN(amount)) return;
+
+            db.ref('clicker_players/' + target).once('value').then((snap) => {
+                if(snap.exists()) {
+                    let current = snap.val().coins || 0;
+                    db.ref('clicker_players/' + target + '/coins').set(current + (amount * 1000000));
+                    alert("Выдано!");
+                    if(target === myName) {
+                        gameState.coins += (amount * 1000000);
+                        updateUI();
+                    }
+                } else { alert("Нет такого игрока!"); }
+            });
+        };
+    </script>
+</body>
+</html>
