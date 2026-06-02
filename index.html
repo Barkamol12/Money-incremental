@@ -2,19 +2,20 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Football Clicker</title>
+    <title>Football Manager</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <style>
-        body { text-align: center; font-family: sans-serif; background: #064e3b; color: white; padding-top: 50px; }
-        .box { background: #065f46; padding: 30px; border-radius: 15px; width: 350px; margin: 0 auto; border: 2px solid #34d399; }
-        button { margin: 10px; padding: 12px 20px; cursor: pointer; border-radius: 8px; border: none; background: #34d399; font-weight: bold; }
+        body { text-align: center; font-family: 'Segoe UI', sans-serif; background: #064e3b; color: white; padding-top: 30px; }
+        .box { background: #065f46; padding: 20px; border-radius: 20px; width: 320px; margin: 0 auto; border: 2px solid #34d399; }
+        button { margin: 8px; padding: 10px; cursor: pointer; border-radius: 10px; border: none; background: #34d399; font-weight: bold; width: 90%; }
+        button:hover { background: #10b981; }
     </style>
 </head>
 <body>
     <div id="auth" class="box">
         <h3>Вход в клуб</h3>
-        <input type="text" id="nick" placeholder="Имя игрока">
+        <input type="text" id="nick" placeholder="Имя клуба">
         <button onclick="login()">Войти</button>
     </div>
     <div id="game" class="box" style="display:none;">
@@ -23,21 +24,14 @@
         <p>⚽ Тренировки: <span id="training">0</span></p>
         <p>🏃 Футболисты: <span id="playersCount">0</span></p>
         <hr>
-        <button onclick="clickTrain()">На тренировку</button>
+        <button onclick="clickTrain()">На тренировку (+1)</button>
         <button onclick="buyPlayer()">Купить игрока (50 монет)</button>
+        <button onclick="buyStar()" style="background: #fbbf24;">Купить ЗВЕЗДУ (200 монет)</button>
     </div>
     <script>
         firebase.initializeApp({databaseURL: "https://money-incremental-default-rtdb.firebaseio.com"});
         const db = firebase.database();
-        let myNick = "", data = {coins: 0, training: 0, playersCount: 0};
-
-        function fixData(d) {
-            return {
-                coins: (d.coins && !isNaN(d.coins)) ? d.coins : 0,
-                training: (d.training && !isNaN(d.training)) ? d.training : 0,
-                playersCount: (d.playersCount && !isNaN(d.playersCount)) ? d.playersCount : 0
-            };
-        }
+        let myNick = "", data = {coins: 0, training: 0, playersCount: 0, starsCount: 0};
 
         function login() {
             myNick = document.getElementById('nick').value.trim();
@@ -47,33 +41,28 @@
             document.getElementById('name').innerText = "Клуб: " + myNick;
             
             db.ref('players/' + myNick).on('value', (s) => {
-                if(s.exists()) data = fixData(s.val());
+                if(s.exists()) {
+                    let d = s.val();
+                    data = {
+                        coins: d.coins || 0,
+                        training: d.training || 0,
+                        playersCount: d.playersCount || 0,
+                        starsCount: d.starsCount || 0
+                    };
+                }
                 document.getElementById('coins').innerText = Math.floor(data.coins);
                 document.getElementById('training').innerText = Math.floor(data.training);
-                document.getElementById('playersCount').innerText = Math.floor(data.playersCount);
+                document.getElementById('playersCount').innerText = data.playersCount + " (" + data.starsCount + " звезд)";
             });
         }
-
-        function clickTrain() { 
-            data.training++; 
-            updateDB(); 
-        }
-
-        function buyPlayer() {
-            if(data.coins >= 50) { 
-                data.coins -= 50; 
-                data.playersCount++; 
-                updateDB(); 
-            }
-        }
-
-        function updateDB() { 
-            db.ref('players/' + myNick).set(data); 
-        }
+        function clickTrain() { data.training++; updateDB(); }
+        function buyPlayer() { if(data.coins >= 50) { data.coins -= 50; data.playersCount++; updateDB(); } }
+        function buyStar() { if(data.coins >= 200) { data.coins -= 200; data.starsCount++; updateDB(); } }
+        function updateDB() { db.ref('players/' + myNick).set(data); }
         
         setInterval(() => {
             if(myNick) {
-                data.coins += (data.playersCount * 0.5);
+                data.coins += (data.playersCount * 0.5) + (data.starsCount * 3);
                 updateDB();
             }
         }, 1000);
