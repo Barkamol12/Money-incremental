@@ -1,57 +1,59 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Perfect Incremental</title>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <style>
-        body { background: #0f172a; color: white; font-family: sans-serif; display: flex; justify-content: center; }
-        .game-box { background: #1e293b; padding: 25px; border-radius: 20px; width: 350px; text-align: center; margin-top: 50px; }
-        button { width: 100%; padding: 12px; margin: 5px 0; border: none; border-radius: 8px; cursor: pointer; background: #3b82f6; color: white; font-weight: bold; }
-        button:disabled { background: #475569; }
+        body { background: #0f172a; color: #f1f5f9; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; }
+        .box { background: #1e293b; padding: 25px; border-radius: 15px; width: 350px; border: 1px solid #3b82f6; }
+        .stat { margin: 10px 0; font-weight: bold; }
+        button { width: 100%; padding: 10px; margin: 5px 0; border: none; border-radius: 5px; background: #2563eb; color: white; cursor: pointer; }
     </style>
 </head>
 <body>
-    <div id="game" class="game-box">
-        <h2>💰 Баланс: <span id="coins">0</span></h2>
-        <p>📈 Множитель: x<span id="mult">1</span></p>
-        <button onclick="manualClick()">Кликнуть (+1)</button>
-        <button id="buyAuto" onclick="buyAuto()">Автокликер (Цена: 50)</button>
-        <button id="prestige" onclick="prestige()" disabled>ПРЕСТИЖ (Нужно 1000 монет)</button>
-        <div id="leaderboard" style="margin-top:20px; font-size: 12px;"></div>
+    <div class="box">
+        <h3>⚽ RPG Career: <span id="nick">Barkamol</span></h3>
+        <div class="stat">⚡ Энергия: <span id="energy">100</span>/100</div>
+        <div class="stat">🏆 Репутация: <span id="rep">0</span></div>
+        <hr>
+        <button onclick="train()">Тренировка (Энергия -10)</button>
+        <button onclick="match()">Сыграть матч (Энергия -30)</button>
+        <button onclick="sleep()">Сон (Восстановить энергию)</button>
     </div>
+
     <script>
-        firebase.initializeApp({databaseURL: "https://money-incremental-default-rtdb.firebaseio.com"});
-        const db = firebase.database();
-        let data = { coins: 0, autoCount: 0, prestigeMult: 1 };
-        let nick = "Player_" + Math.floor(Math.random()*1000);
-
-        function manualClick() { data.coins += data.prestigeMult; updateUI(); }
-        
-        function buyAuto() {
-            let cost = 50 * Math.pow(1.15, data.autoCount);
-            if(data.coins >= cost) { data.coins -= cost; data.autoCount++; updateUI(); }
-        }
-
-        function prestige() {
-            if(data.coins >= 1000) {
-                data.prestigeMult += 1;
-                data.coins = 0; data.autoCount = 0;
-                updateUI();
-            }
-        }
+        let player = { energy: 100, rep: 0 };
 
         function updateUI() {
-            document.getElementById('coins').innerText = Math.floor(data.coins);
-            document.getElementById('mult').innerText = data.prestigeMult;
-            document.getElementById('prestige').disabled = data.coins < 1000;
-            db.ref('players/' + nick).set(data);
+            document.getElementById('energy').innerText = player.energy;
+            document.getElementById('rep').innerText = player.rep;
         }
 
-        setInterval(() => {
-            data.coins += (data.autoCount * 0.1) * data.prestigeMult;
+        function train() {
+            if (player.energy >= 10) {
+                player.energy -= 10;
+                player.rep += 5; // Улучшение навыка
+                updateUI();
+            } else { alert("Нужен отдых!"); }
+        }
+
+        function match() {
+            if (player.energy >= 30) {
+                player.energy -= 30;
+                // Шанс на победу 60%
+                if (Math.random() > 0.4) {
+                    player.rep += 50;
+                    alert("Победа в матче!");
+                } else {
+                    player.rep += 10;
+                    alert("Ничья / Поражение.");
+                }
+                updateUI();
+            } else { alert("Слишком устал для матча!"); }
+        }
+
+        function sleep() {
+            player.energy = 100;
             updateUI();
-        }, 1000);
+        }
     </script>
 </body>
 </html>
