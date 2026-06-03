@@ -573,10 +573,12 @@ auth.onAuthStateChanged(user => {
     document.getElementById('signin-overlay').style.display = 'none';
     if (!gameStarted) {
       gameStarted = true;
-      load();
-      buildUI();
-      updateHeader();
-      requestAnimationFrame(gameLoop);
+      loadFromCloud().then(fromCloud => {
+        if (!fromCloud) loadFromLocal();
+        buildUI();
+        updateHeader();
+        requestAnimationFrame(gameLoop);
+      });
     }
   } else {
     document.getElementById('signin-overlay').style.display = 'flex';
@@ -847,25 +849,54 @@ function spawnFloat(x, y, text) {
 }
 
 // ── Сохранение ────────────────────────────────────────────
-function save() {
-  localStorage.setItem('bizempire2', JSON.stringify({
+function buildSaveData() {
+  return {
     money, totalEarned,
     state: state.map(s => ({ count: s.count, upgrades: s.upgrades, hasManager: s.hasManager, progress: s.progress, ready: s.ready }))
-  }));
+  };
 }
 
-function load() {
-  const raw = localStorage.getItem('bizempire2');
-  if (!raw) return;
+function applySaveData(d) {
+  money       = d.money       || 10;
+  totalEarned = d.totalEarned || 0;
+  (d.state || []).forEach((sv, i) => { if (state[i]) Object.assign(state[i], sv); });
+}
+
+function save() {
+  localStorage.setItem('bizempire2', JSON.stringify(buildSaveData()));
+}
+
+async function saveToCloud() {
+  if (!playerId) return;
   try {
-    const d = JSON.parse(raw);
-    money       = d.money       || 10;
-    totalEarned = d.totalEarned || 0;
-    (d.state || []).forEach((sv, i) => { if (state[i]) Object.assign(state[i], sv); });
+    await fetch(`${DB_URL}/saves/${playerId}.json`, {
+      method:  'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify(buildSaveData()),
+    });
   } catch(e) {}
 }
 
+async function loadFromCloud() {
+  if (!playerId) return false;
+  try {
+    const res = await fetch(`${DB_URL}/saves/${playerId}.json`);
+    const d   = await res.json();
+    if (d && d.state) { applySaveData(d); return true; }
+  } catch(e) {}
+  return false;
+}
+
+function loadFromLocal() {
+  const raw = localStorage.getItem('bizempire2');
+  if (!raw) return false;
+  try { applySaveData(JSON.parse(raw)); return true; } catch(e) {}
+  return false;
+}
+
+// локальное сохранение каждые 5 сек, облачное каждые 30 сек
 setInterval(save, 5000);
+setInterval(saveToCloud, 30000);
 
 // ── Лидерборд ─────────────────────────────────────────────
 async function submitScore() {
