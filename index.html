@@ -108,7 +108,8 @@
       text-shadow: 0 1px 3px #000;
     }
 
-    .biz-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .biz-actions { display: flex; flex-direction: column; gap: 6px; }
+    .biz-actions-row { display: flex; gap: 6px; }
 
     .btn {
       padding: 8px 14px;
@@ -2554,6 +2555,17 @@ function collect(i, event) {
   earnedThisMinute += earned;
   checkAchievements();
   updatePrestigeBtn();
+
+  // сброс визуала карточки
+  const card = getCard(i);
+  if (card) {
+    card.classList.remove('ready-glow');
+    const bar = card.querySelector('.progress-bar');
+    if (bar) bar.style.width = '0%';
+    const lbl = card.querySelector('.progress-label');
+    if (lbl) lbl.textContent = cycleTime(i) + t.secShort;
+  }
+
   if (event) spawnFloat(event.clientX, event.clientY, '+' + fmt(earned));
 
   updateHeader();
@@ -2612,6 +2624,18 @@ function refreshActions(i) {
   if (!el) return;
   el.innerHTML = '';
   const def = DEFS[i], s = state[i];
+
+  // ряд 1 — СОБРАТЬ
+  const row1 = document.createElement('div');
+  row1.className = 'biz-actions-row';
+
+  // ряд 2 — кнопки покупки
+  const row2 = document.createElement('div');
+  row2.className = 'biz-actions-row';
+
+  // ряд 3 — улучшение и менеджер
+  const row3 = document.createElement('div');
+  row3.className = 'biz-actions-row';
 
   const cBtn = document.createElement('button');
   if (s.count === 0) {
