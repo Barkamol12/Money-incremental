@@ -1,74 +1,56 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title>Football Manager Pro</title>
+    <title>Perfect Incremental</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <style>
-        body { text-align: center; font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #1e3a8a, #3b82f6); color: white; min-height: 100vh; margin: 0; padding-top: 20px; }
-        .box { background: rgba(30, 58, 138, 0.8); padding: 20px; border-radius: 20px; width: 400px; margin: 0 auto; border: 2px solid #60a5fa; backdrop-filter: blur(10px); }
-        button { margin: 5px; padding: 10px; cursor: pointer; border-radius: 8px; border: none; background: #2563eb; color: white; font-weight: bold; width: 90%; }
-        .leaderboard { margin-top: 15px; text-align: left; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 10px; }
+        body { background: #0f172a; color: white; font-family: sans-serif; display: flex; justify-content: center; }
+        .game-box { background: #1e293b; padding: 25px; border-radius: 20px; width: 350px; text-align: center; margin-top: 50px; }
+        button { width: 100%; padding: 12px; margin: 5px 0; border: none; border-radius: 8px; cursor: pointer; background: #3b82f6; color: white; font-weight: bold; }
+        button:disabled { background: #475569; }
     </style>
 </head>
 <body>
-    <div id="auth" class="box">
-        <h3>Вход в клуб</h3>
-        <input type="text" id="nick" placeholder="Имя игрока" style="padding: 8px; border-radius: 5px; border: none; width: 80%;">
-        <button onclick="login()">Войти</button>
-    </div>
-    <div id="game" class="box" style="display:none;">
-        <h2 id="name"></h2>
-        <p>💰 Монеты: <span id="coins">0</span></p>
-        <button onclick="showLeaderboard()">Показать таблицу лидеров</button>
-        <div id="leaderboardDiv" class="leaderboard" style="display:none;"></div>
-        <hr>
-        <button onclick="clickTrain()">Тренироваться</button>
-        <button onclick="upgradeClick()">Улучшить клик (100 монет)</button>
-        <button onclick="playMatch('barca')">Barcelona (100 трен.)</button>
+    <div id="game" class="game-box">
+        <h2>💰 Баланс: <span id="coins">0</span></h2>
+        <p>📈 Множитель: x<span id="mult">1</span></p>
+        <button onclick="manualClick()">Кликнуть (+1)</button>
+        <button id="buyAuto" onclick="buyAuto()">Автокликер (Цена: 50)</button>
+        <button id="prestige" onclick="prestige()" disabled>ПРЕСТИЖ (Нужно 1000 монет)</button>
+        <div id="leaderboard" style="margin-top:20px; font-size: 12px;"></div>
     </div>
     <script>
         firebase.initializeApp({databaseURL: "https://money-incremental-default-rtdb.firebaseio.com"});
         const db = firebase.database();
-        let myNick = "", data = {coins: 0, training: 0, clickPower: 1};
+        let data = { coins: 0, autoCount: 0, prestigeMult: 1 };
+        let nick = "Player_" + Math.floor(Math.random()*1000);
 
-        function login() {
-            myNick = document.getElementById('nick').value.trim();
-            if(!myNick) return;
-            document.getElementById('auth').style.display = 'none';
-            document.getElementById('game').style.display = 'block';
-            document.getElementById('name').innerText = "Клуб: " + myNick;
-            db.ref('players/' + myNick).on('value', (s) => {
-                if(s.exists()) data = s.val();
-                document.getElementById('coins').innerText = Math.floor(data.coins);
-            });
-        }
-
-        function showLeaderboard() {
-            let div = document.getElementById('leaderboardDiv');
-            div.style.display = 'block';
-            div.innerHTML = "Загрузка...";
-            db.ref('players').orderByChild('coins').limitToLast(5).once('value', (s) => {
-                div.innerHTML = "<h4>Топ 5 богачей:</h4>";
-                let players = [];
-                s.forEach(child => { players.push({name: child.key, coins: child.val().coins}); });
-                players.reverse().forEach((p, i) => {
-                    div.innerHTML += `${i+1}. ${p.name}: ${Math.floor(p.coins)} монет<br>`;
-                });
-            });
-        }
-
-        function clickTrain() { data.training += data.clickPower; updateDB(); }
-        function upgradeClick() { if(data.coins >= 100) { data.coins -= 100; data.clickPower++; updateDB(); } }
-        function playMatch(t) { if(t === 'barca' && data.training >= 100) { data.training -= 100; data.coins += 50; updateDB(); } }
-        function updateDB() { db.ref('players/' + myNick).set(data); }
+        function manualClick() { data.coins += data.prestigeMult; updateUI(); }
         
-        setInterval(() => {
-            if(myNick) {
-                data.coins += (data.playersCount || 0) * 0.5;
-                updateDB();
+        function buyAuto() {
+            let cost = 50 * Math.pow(1.15, data.autoCount);
+            if(data.coins >= cost) { data.coins -= cost; data.autoCount++; updateUI(); }
+        }
+
+        function prestige() {
+            if(data.coins >= 1000) {
+                data.prestigeMult += 1;
+                data.coins = 0; data.autoCount = 0;
+                updateUI();
             }
+        }
+
+        function updateUI() {
+            document.getElementById('coins').innerText = Math.floor(data.coins);
+            document.getElementById('mult').innerText = data.prestigeMult;
+            document.getElementById('prestige').disabled = data.coins < 1000;
+            db.ref('players/' + nick).set(data);
+        }
+
+        setInterval(() => {
+            data.coins += (data.autoCount * 0.1) * data.prestigeMult;
+            updateUI();
         }, 1000);
     </script>
 </body>
