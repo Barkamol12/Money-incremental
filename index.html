@@ -2,6 +2,8 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#1a1a2e" />
   <title>Бизнес Империя</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -344,6 +346,60 @@
     }
     .lang-btn:hover  { background: #1a5a9a; color: #fff; }
     .lang-btn.active { background: #e94560; color: #fff; border-color: #e94560; }
+
+    /* ===== МОБИЛЬНАЯ ВЕРСИЯ ===== */
+    @media (max-width: 600px) {
+      #header {
+        padding: 10px 12px;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      #header h1 { font-size: 1rem; }
+      .money-amount { font-size: 1.4rem; }
+      .money-ps { font-size: 0.75rem; }
+
+      #lb-btn {
+        padding: 7px 12px;
+        font-size: 0.8rem;
+      }
+      #settings-btn, #signout-btn {
+        padding: 7px 10px;
+        font-size: 0.8rem;
+      }
+
+      #businesses { padding: 10px; gap: 10px; }
+
+      .biz-card { padding: 12px; }
+      .biz-icon  { font-size: 1.8rem; }
+      .biz-name  { font-size: 0.95rem; }
+      .biz-count { font-size: 1.3rem; }
+
+      .btn { padding: 10px 10px; font-size: 0.8rem; }
+      .btn-collect { font-size: 0.9rem; padding: 12px 8px; }
+
+      .progress-wrap { height: 30px; }
+      .progress-label { font-size: 0.7rem; }
+
+      /* Модалы на весь экран */
+      #lb-panel, #settings-panel {
+        width: 100%;
+        max-width: 100%;
+        max-height: 92vh;
+        border-radius: 16px 16px 0 0;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+      }
+      #lb-overlay, #settings-overlay {
+        align-items: flex-end;
+      }
+
+      /* Экран входа */
+      #signin-overlay h1 { font-size: 1.6rem; }
+      #google-signin-btn { font-size: 0.95rem; padding: 12px 20px; }
+
+      .ms-badge { font-size: 0.65rem; padding: 2px 6px; }
+    }
   </style>
 </head>
 <body>
