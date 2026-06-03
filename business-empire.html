@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Бизнес Империя</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #0d0d1a;
+      color: #eee;
+      font-family: 'Segoe UI', sans-serif;
+      min-height: 100vh;
+    }
+
+    /* ===== ШАПКА ===== */
+    #header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: #1a1a2e;
+      border-bottom: 2px solid #e94560;
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    #header h1 { font-size: 1.2rem; color: #e94560; letter-spacing: 1px; flex: 1; }
+
+    #lb-btn {
+      background: #ffd700;
+      color: #000;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 18px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 0.9rem;
+      white-space: nowrap;
+    }
+    #lb-btn:hover { background: #ffe84d; }
+
+    .money-block { text-align: right; }
+    .money-amount { font-size: 1.8rem; font-weight: bold; color: #ffd700; }
+    .money-ps     { font-size: 0.85rem; color: #aaa; }
+
+    /* ===== БИЗНЕСЫ ===== */
+    #businesses {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    .biz-card {
+      background: #16213e;
+      border: 1px solid #0f3460;
+      border-radius: 14px;
+      padding: 16px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .biz-card.locked { opacity: 0.45; }
+    .biz-card.ready-glow {
+      border-color: #ffd700;
+      box-shadow: 0 0 16px #ffd70044;
+    }
+
+    .biz-top { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+    .biz-icon { font-size: 2.2rem; line-height: 1; }
+    .biz-info { flex: 1; }
+    .biz-name  { font-size: 1rem; font-weight: bold; }
+    .biz-stats { font-size: 0.78rem; color: #aaa; margin-top: 3px; }
+    .biz-count { font-size: 1.6rem; font-weight: bold; color: #e94560; min-width: 44px; text-align: right; }
+
+    .progress-wrap {
+      background: #0a0a1a;
+      border-radius: 8px;
+      height: 26px;
+      margin-bottom: 10px;
+      overflow: hidden;
+      position: relative;
+    }
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #0f3460, #e94560);
+      border-radius: 8px;
+      width: 0%;
+    }
+    .biz-card.ready-glow .progress-bar {
+      width: 100% !important;
+      background: linear-gradient(90deg, #b8860b, #ffd700);
+      animation: goldPulse 0.6s infinite alternate;
+    }
+    @keyframes goldPulse { from { opacity: 0.75; } to { opacity: 1; } }
+
+    .progress-label {
+      position: absolute;
+      right: 10px; top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.72rem;
+      color: #fff;
+      text-shadow: 0 1px 3px #000;
+    }
+
+    .biz-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    .btn {
+      padding: 8px 14px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.82rem;
+      font-weight: bold;
+      transition: opacity 0.15s, transform 0.08s;
+    }
+    .btn:active:not(:disabled) { transform: scale(0.94); }
+    .btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+    .btn-collect { flex: 1; font-size: 0.95rem; background: #ffd700; color: #000; }
+    .btn-collect.managed { background: #1a3a1a; color: #4caf50; cursor: default; }
+    .btn-collect.idle    { background: #1a2a4a; color: #556; }
+
+    .btn-buy { background: #0f3460; color: #fff; border: 1px solid #1a5a9a; }
+    .btn-buy:hover:not(:disabled) { background: #1a5a9a; }
+
+    .btn-upgrade { background: #2a1a4a; color: #bb86fc; border: 1px solid #6a3a9a; }
+    .btn-upgrade:hover:not(:disabled) { background: #3a2a6a; }
+
+    .btn-manager { background: #1a2a1a; color: #4caf50; border: 1px solid #2a5a2a; }
+    .btn-manager:hover:not(:disabled) { background: #2a4a2a; }
+
+    .milestones { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+    .ms-badge {
+      font-size: 0.68rem; padding: 2px 8px; border-radius: 10px;
+      background: #0a0a1a; color: #444; border: 1px solid #1a1a2e;
+    }
+    .ms-badge.done { background: #1a3a1a; color: #4caf50; border-color: #2a6a2a; }
+
+    .float-money {
+      position: fixed; pointer-events: none;
+      font-size: 1.1rem; font-weight: bold;
+      color: #ffd700; text-shadow: 0 1px 4px #000;
+      animation: floatUp 1s ease-out forwards; white-space: nowrap;
+    }
+    @keyframes floatUp {
+      0%   { opacity: 1; transform: translateY(0); }
+      100% { opacity: 0; transform: translateY(-70px); }
+    }
+
+    /* ===== ЛИДЕРБОРД ОВЕРЛЕЙ ===== */
+    #lb-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.75);
+      z-index: 300;
+      align-items: center;
+      justify-content: center;
+    }
+    #lb-overlay.open { display: flex; }
+
+    #lb-panel {
+      background: #16213e;
+      border: 2px solid #ffd700;
+      border-radius: 18px;
+      padding: 24px;
+      width: 440px;
+      max-width: 92vw;
+      max-height: 85vh;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    #lb-panel h2 { color: #ffd700; font-size: 1.4rem; text-align: center; }
+
+    #lb-player-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #0f3460;
+      border-radius: 10px;
+      padding: 10px 14px;
+    }
+    #lb-myname { flex: 1; font-weight: bold; font-size: 1rem; }
+    #lb-rename {
+      background: #1a5a9a; color: #fff; border: none;
+      border-radius: 6px; padding: 5px 10px;
+      cursor: pointer; font-size: 0.8rem;
+    }
+    #lb-rename:hover { background: #2a7acc; }
+
+    #lb-myscore { text-align: center; color: #aaa; font-size: 0.9rem; }
+    #lb-myscore span { color: #ffd700; font-weight: bold; }
+
+    #lb-submit-btn {
+      background: #e94560; color: #fff;
+      border: none; border-radius: 10px;
+      padding: 11px; font-size: 1rem;
+      font-weight: bold; cursor: pointer;
+    }
+    #lb-submit-btn:hover { background: #ff6b81; }
+    #lb-submit-btn:disabled { opacity: 0.5; cursor: default; }
+
+    #lb-status { text-align: center; font-size: 0.82rem; color: #4caf50; min-height: 18px; }
+
+    #lb-list { display: flex; flex-direction: column; gap: 6px; }
+
+    .lb-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #0f3460;
+      border-radius: 8px;
+      padding: 9px 14px;
+    }
+    .lb-row.lb-me {
+      background: #2a1a00;
+      border: 1px solid #ffd700;
+    }
+    .lb-rank  { font-size: 1.2rem; min-width: 28px; }
+    .lb-name  { flex: 1; font-weight: bold; }
+    .lb-score { color: #ffd700; font-weight: bold; white-space: nowrap; }
+
+    .lb-empty { text-align: center; color: #555; padding: 20px 0; }
+
+    #lb-footer { display: flex; gap: 10px; }
+    #lb-refresh {
+      flex: 1; background: #0f3460; color: #fff;
+      border: 1px solid #1a5a9a; border-radius: 8px;
+      padding: 9px; cursor: pointer; font-weight: bold;
+    }
+    #lb-refresh:hover { background: #1a5a9a; }
+    #lb-close-btn {
+      flex: 1; background: #2a1a1a; color: #e94560;
+      border: 1px solid #4a2a2a; border-radius: 8px;
+      padding: 9px; cursor: pointer; font-weight: bold;
+    }
+    #lb-close-btn:hover { background: #3a2a2a; }
+
+    /* ===== ЭКРАН ВХОДА ===== */
+    #signin-overlay {
+      position: fixed; inset: 0; z-index: 500;
+      background: #0d0d1a;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 20px; padding: 24px;
+    }
+    #signin-overlay h1 { font-size: 2rem; color: #e94560; }
+    #signin-overlay p  { color: #aaa; font-size: 1rem; }
+    #google-signin-btn {
+      display: flex; align-items: center; gap: 12px;
+      background: #fff; color: #333;
+      border: none; border-radius: 10px;
+      padding: 14px 28px; font-size: 1rem;
+      font-weight: bold; cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    #google-signin-btn:hover { background: #f0f0f0; }
+    #google-signin-btn img { width: 24px; height: 24px; }
+
+    #signout-btn {
+      background: transparent; color: #aaa;
+      border: 1px solid #333; border-radius: 8px;
+      padding: 6px 12px; cursor: pointer; font-size: 0.8rem;
+    }
+    #signout-btn:hover { color: #fff; border-color: #555; }
+
+    /* ===== КНОПКА НАСТРОЕК ===== */
+    #settings-btn {
+      background: transparent; color: #aaa;
+      border: 1px solid #333; border-radius: 8px;
+      padding: 6px 12px; cursor: pointer; font-size: 1rem;
+    }
+    #settings-btn:hover { color: #fff; border-color: #555; }
+
+    /* ===== МОДАЛ НАСТРОЕК ===== */
+    #settings-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.75); z-index: 300;
+      align-items: center; justify-content: center;
+    }
+    #settings-overlay.open { display: flex; }
+    #settings-panel {
+      background: #16213e; border: 2px solid #e94560;
+      border-radius: 18px; padding: 24px; width: 360px;
+      max-width: 92vw; display: flex; flex-direction: column; gap: 18px;
+    }
+    #settings-panel h2 { color: #e94560; font-size: 1.4rem; text-align: center; }
+
+    .setting-row {
+      display: flex; align-items: center;
+      justify-content: space-between; gap: 12px;
+    }
+    .setting-label { font-size: 1rem; }
+
+    /* toggle switch */
+    .toggle { position: relative; width: 52px; height: 28px; flex-shrink: 0; }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider {
+      position: absolute; inset: 0; background: #333;
+      border-radius: 28px; cursor: pointer;
+      transition: background 0.2s;
+    }
+    .toggle-slider::before {
+      content: ''; position: absolute;
+      width: 22px; height: 22px; left: 3px; top: 3px;
+      background: #fff; border-radius: 50%;
+      transition: transform 0.2s;
+    }
+    .toggle input:checked + .toggle-slider { background: #e94560; }
+    .toggle input:checked + .toggle-slider::before { transform: translateX(24px); }
+
+    .setting-row input[type=range] {
+      flex: 1; accent-color: #e94560; cursor: pointer;
+    }
+
+    .btn-danger {
+      background: #2a0a0a; color: #e94560;
+      border: 1px solid #4a1a1a; border-radius: 8px;
+      padding: 10px; width: 100%; cursor: pointer;
+      font-weight: bold; font-size: 0.9rem;
+    }
+    .btn-danger:hover { background: #3a1a1a; }
+    .btn-settings-close {
+      background: #0f3460; color: #fff;
+      border: 1px solid #1a5a9a; border-radius: 8px;
+      padding: 10px; width: 100%; cursor: pointer;
+      font-weight: bold;
+    }
+    .btn-settings-close:hover { background: #1a5a9a; }
+
+    #lang-btns { display: flex; gap: 6px; }
+    .lang-btn {
+      background: #0f3460; color: #aaa;
+      border: 1px solid #1a3a6a; border-radius: 8px;
+      padding: 6px 12px; cursor: pointer; font-size: 0.85rem;
+      transition: background 0.15s;
+    }
+    .lang-btn:hover  { background: #1a5a9a; color: #fff; }
+    .lang-btn.active { background: #e94560; color: #fff; border-color: #e94560; }
+  </style>
+</head>
+<body>
+
+<!-- ===== ЭКРАН ВХОДА ===== -->
+<div id="signin-overlay">
+  <h1>💼 Бизнес Империя</h1>
+  <p>Войди чтобы начать играть и попасть в лидерборд</p>
+  <button id="google-signin-btn">
+    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+    Войти через Google
+  </button>
+</div>
+
+<div id="header">
+  <h1>💼 Бизнес Империя</h1>
+  <button id="lb-btn">🏆 Лидерборд</button>
+  <div class="money-block">
+    <div class="money-amount" id="money-display">$0</div>
+    <div class="money-ps"    id="ps-display">$0/сек</div>
+  </div>
+  <button id="settings-btn">⚙️</button>
+  <button id="signout-btn">Выйти</button>
+</div>
+
+<!-- ===== НАСТРОЙКИ ===== -->
+<div id="settings-overlay">
+  <div id="settings-panel">
+    <h2>⚙️ Настройки</h2>
+
+    <div class="setting-row">
+      <span class="setting-label">🔊 Звуки</span>
+      <label class="toggle">
+        <input type="checkbox" id="snd-toggle" checked>
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+
+    <div class="setting-row">
+      <span class="setting-label">🔉 Громкость</span>
+      <input type="range" id="snd-volume" min="0" max="100" value="60">
+    </div>
+
+    <div class="setting-row">
+      <span class="setting-label" id="lbl-lang">🌐 Язык</span>
+      <div id="lang-btns">
+        <button class="lang-btn active" data-lang="ru">🇷🇺 RU</button>
+        <button class="lang-btn" data-lang="en">🇬🇧 EN</button>
+        <button class="lang-btn" data-lang="uz">🇺🇿 UZ</button>
+      </div>
+    </div>
+
+    <button class="btn-settings-close" id="settings-close-btn">✕ Закрыть</button>
+  </div>
+</div>
+
+<div id="businesses"></div>
+
+<!-- ===== ЛИДЕРБОРД МОДАЛ ===== -->
+<div id="lb-overlay">
+  <div id="lb-panel">
+    <h2>🏆 Лидерборд</h2>
+
+    <div id="lb-player-row">
+      <span id="lb-myname">...</span>
+    </div>
+
+    <div id="lb-myscore">Твой рекорд: <span id="lb-myscore-val">$0</span></div>
+
+    <button id="lb-submit-btn">📤 Отправить мой счёт</button>
+    <div id="lb-status"></div>
+
+    <div id="lb-list"><div class="lb-empty">Загрузка...</div></div>
+
+    <div id="lb-footer">
+      <button id="lb-refresh">🔄 Обновить</button>
+      <button id="lb-close-btn">✕ Закрыть</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script>
+// ── Firebase ──────────────────────────────────────────────
+firebase.initializeApp({
+  apiKey:            'AIzaSyBZP9MjuM0nA-CaW_rlC74rDBX65YZh6a0',
+  authDomain:        'money-incremental.firebaseapp.com',
+  projectId:         'money-incremental',
+  appId:             '1:701436394106:web:c68723aa1195c2b4ca59c3',
+});
+const auth     = firebase.auth();
+const provider = new firebase.auth.GoogleAuthProvider();
+
+// ── REST API ──────────────────────────────────────────────
+const DB_URL = 'https://money-incremental-default-rtdb.firebaseio.com';
+
+// ── Звуки ─────────────────────────────────────────────────
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+let soundEnabled = true;
+let soundVolume  = 0.6;
+
+function playTone(freq, type, duration, freqEnd, gainStart, gainEnd) {
+  if (!soundEnabled) return;
+  const osc  = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.connect(gain); gain.connect(audioCtx.destination);
+  osc.type = type;
+  osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+  if (freqEnd) osc.frequency.exponentialRampToValueAtTime(freqEnd, audioCtx.currentTime + duration);
+  gain.gain.setValueAtTime(gainStart * soundVolume, audioCtx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(Math.max(gainEnd, 0.001), audioCtx.currentTime + duration);
+  osc.start(); osc.stop(audioCtx.currentTime + duration);
+}
+
+const sounds = {
+  collect() {
+    playTone(520, 'sine', 0.08, 880, 0.3, 0.01);
+    setTimeout(() => playTone(880, 'sine', 0.12, 1200, 0.2, 0.001), 60);
+  },
+  buy() {
+    playTone(300, 'square', 0.06, 500, 0.15, 0.001);
+  },
+  upgrade() {
+    [400, 550, 700, 900].forEach((f, i) =>
+      setTimeout(() => playTone(f, 'sine', 0.1, f * 1.2, 0.2, 0.001), i * 70)
+    );
+  },
+  manager() {
+    [500, 700, 600, 900].forEach((f, i) =>
+      setTimeout(() => playTone(f, 'triangle', 0.15, f, 0.25, 0.001), i * 100)
+    );
+  },
+};
+
+// ── Переводы ──────────────────────────────────────────────
+const LANGS = {
+  ru: {
+    gameTitle:'💼 Бизнес Империя', lbBtn:'🏆 Лидерборд', signout:'Выйти',
+    signinDesc:'Войди чтобы начать играть и попасть в лидерборд', signinBtn:'Войти через Google',
+    collect:'💰 СОБРАТЬ!', working:'⏳ Работает...', noBiz:'🔒 Нет бизнеса', managed:'👔 Менеджер работает',
+    upgrade:'⬆️ x', manager:'👔 Менеджер', cost:'Стоимость', level:'Ур.', perSec:'/сек', secShort:'с', ready:'ГОТОВО!',
+    lbTitle:'🏆 Лидерборд', lbRecord:'Твой рекорд:', lbSubmit:'📤 Отправить мой счёт',
+    lbRefresh:'🔄 Обновить', lbClose:'✕ Закрыть', lbLoading:'Загрузка...',
+    lbEmpty:'Пока никого — стань первым! 🚀', lbSending:'Отправляю...', lbSent:'✅ Счёт отправлен!',
+    settingsTitle:'⚙️ Настройки', sndLabel:'🔊 Звуки', volLabel:'🔉 Громкость', langLabel:'🌐 Язык',
+    resetBtn:'🗑️ Сбросить прогресс', closeBtn:'✕ Закрыть',
+    confirmReset:'Точно сбросить весь прогресс?', confirmSignout:'Выйти из аккаунта?',
+    bizNames:['Пиццерия','Кофейня','Магазин','Ресторан','Отель','Завод','Банк','Медиахолдинг'],
+  },
+  en: {
+    gameTitle:'💼 Business Empire', lbBtn:'🏆 Leaderboard', signout:'Sign out',
+    signinDesc:'Sign in to start playing and join the leaderboard', signinBtn:'Sign in with Google',
+    collect:'💰 COLLECT!', working:'⏳ Working...', noBiz:'🔒 No business', managed:'👔 Manager working',
+    upgrade:'⬆️ x', manager:'👔 Manager', cost:'Cost', level:'Lvl.', perSec:'/sec', secShort:'s', ready:'READY!',
+    lbTitle:'🏆 Leaderboard', lbRecord:'Your record:', lbSubmit:'📤 Submit my score',
+    lbRefresh:'🔄 Refresh', lbClose:'✕ Close', lbLoading:'Loading...',
+    lbEmpty:'Nobody yet — be first! 🚀', lbSending:'Sending...', lbSent:'✅ Score submitted!',
+    settingsTitle:'⚙️ Settings', sndLabel:'🔊 Sounds', volLabel:'🔉 Volume', langLabel:'🌐 Language',
+    resetBtn:'🗑️ Reset progress', closeBtn:'✕ Close',
+    confirmReset:'Really reset all progress?', confirmSignout:'Sign out of account?',
+    bizNames:['Pizzeria','Coffee Shop','Store','Restaurant','Hotel','Factory','Bank','Media Holding'],
+  },
+  uz: {
+    gameTitle:"💼 Biznes Imperiyasi", lbBtn:'🏆 Reyting', signout:'Chiqish',
+    signinDesc:"O'ynash va reytingga kirish uchun tizimga kiring", signinBtn:'Google orqali kirish',
+    collect:"💰 YIG'ISH!", working:'⏳ Ishlayapti...', noBiz:"🔒 Biznes yo'q", managed:'👔 Menejer ishlayapti',
+    upgrade:'⬆️ x', manager:'👔 Menejer', cost:'Narxi', level:'Daraja', perSec:'/son', secShort:'s', ready:'TAYYOR!',
+    lbTitle:'🏆 Reyting', lbRecord:'Sizning rekord:', lbSubmit:'📤 Natijani yuborish',
+    lbRefresh:'🔄 Yangilash', lbClose:'✕ Yopish', lbLoading:'Yuklanmoqda...',
+    lbEmpty:"Hali hech kim yo'q — birinchi bo'ling! 🚀", lbSending:'Yuborilmoqda...', lbSent:'✅ Natija yuborildi!',
+    settingsTitle:'⚙️ Sozlamalar', sndLabel:'🔊 Tovushlar', volLabel:'🔉 Ovoz', langLabel:'🌐 Til',
+    resetBtn:"🗑️ Progressni tiklash", closeBtn:'✕ Yopish',
+    confirmReset:"Haqiqatan ham barcha progressni tiklash?", confirmSignout:"Hisobdan chiqish?",
+    bizNames:["Pitseriya","Qahvaxona","Do'kon","Restoran","Mehmonxona","Zavod","Bank","Media xolding"],
+  },
+};
+
+let currentLang = localStorage.getItem('bizempire_lang') || 'ru';
+let t = LANGS[currentLang];
+
+function applyLang(code) {
+  currentLang = code;
+  t = LANGS[code];
+  localStorage.setItem('bizempire_lang', code);
+
+  // шапка
+  document.querySelector('#header h1').textContent        = t.gameTitle;
+  document.getElementById('lb-btn').textContent           = t.lbBtn;
+  document.getElementById('signout-btn').textContent      = t.signout;
+  // экран входа
+  document.querySelector('#signin-overlay p').textContent = t.signinDesc;
+  const gBtn = document.getElementById('google-signin-btn');
+  gBtn.innerHTML = `<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" style="width:24px"> ${t.signinBtn}`;
+  // лидерборд
+  document.querySelector('#lb-panel h2').textContent      = t.lbTitle;
+  document.getElementById('lb-myscore').innerHTML         = t.lbRecord + ' <span id="lb-myscore-val">$0</span>';
+  document.getElementById('lb-submit-btn').textContent    = t.lbSubmit;
+  document.getElementById('lb-refresh').textContent       = t.lbRefresh;
+  document.getElementById('lb-close-btn').textContent     = t.lbClose;
+  // настройки
+  document.querySelector('#settings-panel h2').textContent         = t.settingsTitle;
+  document.querySelector('.setting-row:nth-child(2) .setting-label').textContent = t.sndLabel;
+  document.querySelector('.setting-row:nth-child(3) .setting-label').textContent = t.volLabel;
+  document.getElementById('lbl-lang').textContent         = t.langLabel;
+  document.getElementById('settings-close-btn').textContent = t.closeBtn;
+  // кнопки языков
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === code);
+  });
+  // перерисовать бизнесы
+  if (document.getElementById('businesses').children.length > 0) buildUI();
+}
+
+// ── Игрок (заполняется после входа) ───────────────────────
+let playerId   = null;
+let playerName = null;
+
+let gameStarted = false;
+
+applyLang(currentLang);
+
+auth.onAuthStateChanged(user => {
+  if (user) {
+    playerId   = user.uid;
+    playerName = user.displayName || user.email || 'Игрок';
+    document.getElementById('signin-overlay').style.display = 'none';
+    if (!gameStarted) {
+      gameStarted = true;
+      load();
+      buildUI();
+      updateHeader();
+      requestAnimationFrame(gameLoop);
+    }
+  } else {
+    document.getElementById('signin-overlay').style.display = 'flex';
+  }
+});
+
+document.getElementById('google-signin-btn').onclick = () => {
+  auth.signInWithPopup(provider).catch(e => alert('Ошибка входа: ' + e.message));
+};
+
+document.getElementById('signout-btn').onclick = () => {
+  if (confirm(t.confirmSignout)) auth.signOut();
+};
+
+// ── Данные игры ───────────────────────────────────────────
+const DEFS = [
+  { id:0, name:'Пиццерия',     icon:'🍕', baseCost:4,        baseTime:1,   baseIncome:1,        managerCost:25        },
+  { id:1, name:'Кофейня',      icon:'☕', baseCost:60,       baseTime:3,   baseIncome:12,       managerCost:250       },
+  { id:2, name:'Магазин',      icon:'🛒', baseCost:720,      baseTime:6,   baseIncome:120,      managerCost:2500      },
+  { id:3, name:'Ресторан',     icon:'🍔', baseCost:8640,     baseTime:12,  baseIncome:1260,     managerCost:25000     },
+  { id:4, name:'Отель',        icon:'🏨', baseCost:103680,   baseTime:24,  baseIncome:12600,    managerCost:250000    },
+  { id:5, name:'Завод',        icon:'🏭', baseCost:1244160,  baseTime:48,  baseIncome:126000,   managerCost:2500000   },
+  { id:6, name:'Банк',         icon:'🏦', baseCost:15e6,     baseTime:96,  baseIncome:1260000,  managerCost:25000000  },
+  { id:7, name:'Медиахолдинг', icon:'📺', baseCost:180e6,    baseTime:192, baseIncome:12600000, managerCost:250000000 },
+];
+
+const MILESTONES     = [10, 25, 50, 100, 200];
+const MILESTONE_MULT = [2,  4,  8,  16,  32 ];
+
+// ── Состояние ─────────────────────────────────────────────
+let money        = 10;
+let totalEarned  = 0;   // для лидерборда
+
+const state = DEFS.map(() => ({
+  count: 0, upgrades: 0, hasManager: false, progress: 0, ready: false,
+}));
+
+// ── Вычисления ────────────────────────────────────────────
+function msMult(i) {
+  const c = state[i].count;
+  let m = 1;
+  MILESTONES.forEach((ms, mi) => { if (c >= ms) m = MILESTONE_MULT[mi]; });
+  return m;
+}
+function incomePerCycle(i) {
+  const s = state[i];
+  if (s.count === 0) return 0;
+  return DEFS[i].baseIncome * s.count * Math.pow(2, s.upgrades) * msMult(i);
+}
+function cycleTime(i) { return DEFS[i].baseTime; }
+function totalPerSecond() {
+  return DEFS.reduce((sum, _, i) => {
+    if (!state[i].hasManager || state[i].count === 0) return sum;
+    return sum + incomePerCycle(i) / cycleTime(i);
+  }, 0);
+}
+function buyCost(i)     { return Math.floor(DEFS[i].baseCost * Math.pow(1.07, state[i].count)); }
+function upgradeCost(i) { return Math.floor(DEFS[i].baseCost * state[i].count * 10 * Math.pow(3, state[i].upgrades)); }
+
+// ── Игровой цикл ──────────────────────────────────────────
+let lastTime = null;
+
+function gameLoop(ts) {
+  if (!lastTime) lastTime = ts;
+  const dt = (ts - lastTime) / 1000;
+  lastTime = ts;
+
+  DEFS.forEach((_, i) => {
+    const s = state[i];
+    if (s.count === 0 || s.ready) return;
+
+    s.progress += dt / cycleTime(i);
+
+    if (s.progress >= 1) {
+      s.progress = 1;
+      if (s.hasManager) {
+        collect(i, null);
+      } else {
+        s.ready = true;
+        const card = getCard(i);
+        if (card) {
+          card.classList.add('ready-glow');
+          const bar = card.querySelector('.progress-bar');
+          if (bar) bar.style.width = '100%';
+          const lbl = card.querySelector('.progress-label');
+          if (lbl) lbl.textContent = t.ready;
+          const btn = card.querySelector('.btn-collect');
+          if (btn) {
+            btn.textContent = t.collect;
+            btn.className = 'btn btn-collect';
+            btn.disabled = false;
+            btn.onclick = (e) => collect(i, e);
+          }
+        }
+        return;
+      }
+    }
+
+    const card = getCard(i);
+    if (card) {
+      const bar = card.querySelector('.progress-bar');
+      if (bar) bar.style.width = (s.progress * 100).toFixed(1) + '%';
+      const lbl = card.querySelector('.progress-label');
+      if (lbl) lbl.textContent = ((1 - s.progress) * cycleTime(i)).toFixed(1) + t.secShort;
+    }
+  });
+
+  requestAnimationFrame(gameLoop);
+}
+
+// ── Сбор дохода ───────────────────────────────────────────
+function collect(i, event) {
+  const earned = incomePerCycle(i);
+  money       += earned;
+  totalEarned += earned;
+  state[i].progress = 0;
+  state[i].ready    = false;
+
+  sounds.collect();
+  if (event) spawnFloat(event.clientX, event.clientY, '+' + fmt(earned));
+
+  updateHeader();
+  refreshCard(i);
+  updateBuyButtons();
+}
+
+// ── UI ────────────────────────────────────────────────────
+function buildUI() {
+  const wrap = document.getElementById('businesses');
+  wrap.innerHTML = '';
+  DEFS.forEach((def, i) => {
+    const card = document.createElement('div');
+    card.className = 'biz-card' + (state[i].count === 0 ? ' locked' : '');
+    card.id = 'card-' + i;
+    card.innerHTML = `
+      <div class="biz-top">
+        <div class="biz-icon">${def.icon}</div>
+        <div class="biz-info">
+          <div class="biz-name">${t.bizNames[i]}</div>
+          <div class="biz-stats" id="stats-${i}"></div>
+        </div>
+        <div class="biz-count" id="cnt-${i}">0</div>
+      </div>
+      <div class="progress-wrap">
+        <div class="progress-bar" id="pbar-${i}"></div>
+        <div class="progress-label" id="plbl-${i}"></div>
+      </div>
+      <div class="biz-actions" id="acts-${i}"></div>
+      <div class="milestones" id="ms-${i}"></div>
+    `;
+    wrap.appendChild(card);
+    refreshCard(i);
+  });
+}
+
+function refreshCard(i) {
+  refreshStats(i); refreshActions(i); refreshMilestones(i);
+  const cntEl = document.getElementById('cnt-' + i);
+  if (cntEl) cntEl.textContent = state[i].count;
+  const card = getCard(i);
+  if (card) card.classList.toggle('locked', state[i].count === 0);
+}
+
+function refreshStats(i) {
+  const el = document.getElementById('stats-' + i);
+  if (!el) return;
+  const s = state[i];
+  el.textContent = s.count === 0
+    ? t.cost + ': ' + fmt(buyCost(i))
+    : fmt(incomePerCycle(i)) + ' / ' + cycleTime(i) + t.secShort + '  |  ' + t.level + ' ' + (s.upgrades + 1);
+}
+
+function refreshActions(i) {
+  const el = document.getElementById('acts-' + i);
+  if (!el) return;
+  el.innerHTML = '';
+  const def = DEFS[i], s = state[i];
+
+  const cBtn = document.createElement('button');
+  if (s.count === 0) {
+    cBtn.className = 'btn btn-collect idle'; cBtn.textContent = t.noBiz; cBtn.disabled = true;
+  } else if (s.hasManager) {
+    cBtn.className = 'btn btn-collect managed'; cBtn.textContent = t.managed; cBtn.disabled = true;
+  } else if (s.ready) {
+    cBtn.className = 'btn btn-collect'; cBtn.textContent = t.collect;
+    cBtn.onclick = (e) => collect(i, e);
+  } else {
+    cBtn.className = 'btn btn-collect idle'; cBtn.textContent = t.working; cBtn.disabled = true;
+  }
+  el.appendChild(cBtn);
+
+  const bBtn = document.createElement('button');
+  bBtn.className = 'btn btn-buy';
+  bBtn.textContent = '+1  ' + fmt(buyCost(i));
+  bBtn.disabled = money < buyCost(i);
+  bBtn.onclick = () => {
+    if (money < buyCost(i)) return;
+    money -= buyCost(i); state[i].count++;
+    sounds.buy();
+    updateHeader(); refreshCard(i); updateBuyButtons();
+  };
+  el.appendChild(bBtn);
+
+  if (s.count > 0) {
+    const uBtn = document.createElement('button');
+    uBtn.className = 'btn btn-upgrade';
+    uBtn.textContent = t.upgrade + Math.pow(2, s.upgrades + 1) + '  ' + fmt(upgradeCost(i));
+    uBtn.disabled = money < upgradeCost(i);
+    uBtn.onclick = () => {
+      if (money < upgradeCost(i)) return;
+      money -= upgradeCost(i); state[i].upgrades++;
+      sounds.upgrade();
+      updateHeader(); refreshCard(i); updateBuyButtons();
+    };
+    el.appendChild(uBtn);
+  }
+
+  if (s.count > 0 && !s.hasManager) {
+    const mBtn = document.createElement('button');
+    mBtn.className = 'btn btn-manager';
+    mBtn.textContent = t.manager + '  ' + fmt(def.managerCost);
+    mBtn.disabled = money < def.managerCost;
+    mBtn.onclick = () => {
+      if (money < def.managerCost) return;
+      money -= def.managerCost; state[i].hasManager = true;
+      sounds.manager();
+      if (state[i].ready) collect(i, null);
+      updateHeader(); refreshCard(i); updateBuyButtons();
+    };
+    el.appendChild(mBtn);
+  }
+}
+
+function refreshMilestones(i) {
+  const el = document.getElementById('ms-' + i);
+  if (!el) return;
+  el.innerHTML = MILESTONES.map((m, mi) =>
+    `<span class="ms-badge ${state[i].count >= m ? 'done' : ''}">x${m} → ${MILESTONE_MULT[mi]}×</span>`
+  ).join('');
+}
+
+function updateBuyButtons() { DEFS.forEach((_, i) => refreshActions(i)); }
+
+function updateHeader() {
+  document.getElementById('money-display').textContent = fmt(money);
+  document.getElementById('ps-display').textContent    = fmt(totalPerSecond()) + t.perSec;
+}
+
+// ── Утилиты ───────────────────────────────────────────────
+function getCard(i) { return document.getElementById('card-' + i); }
+
+function fmt(n) {
+  if (n >= 1e15) return '$' + (n/1e15).toFixed(2) + 'Qa';
+  if (n >= 1e12) return '$' + (n/1e12).toFixed(2) + 'T';
+  if (n >= 1e9)  return '$' + (n/1e9 ).toFixed(2) + 'B';
+  if (n >= 1e6)  return '$' + (n/1e6 ).toFixed(2) + 'M';
+  if (n >= 1e3)  return '$' + (n/1e3 ).toFixed(2) + 'K';
+  return '$' + Math.floor(n);
+}
+
+function spawnFloat(x, y, text) {
+  const el = document.createElement('div');
+  el.className = 'float-money';
+  el.style.left = x + 'px'; el.style.top = y + 'px';
+  el.textContent = text;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 1000);
+}
+
+// ── Сохранение ────────────────────────────────────────────
+function save() {
+  localStorage.setItem('bizempire2', JSON.stringify({
+    money, totalEarned,
+    state: state.map(s => ({ count: s.count, upgrades: s.upgrades, hasManager: s.hasManager, progress: s.progress, ready: s.ready }))
+  }));
+}
+
+function load() {
+  const raw = localStorage.getItem('bizempire2');
+  if (!raw) return;
+  try {
+    const d = JSON.parse(raw);
+    money       = d.money       || 10;
+    totalEarned = d.totalEarned || 0;
+    (d.state || []).forEach((sv, i) => { if (state[i]) Object.assign(state[i], sv); });
+  } catch(e) {}
+}
+
+setInterval(save, 5000);
+
+// ── Лидерборд ─────────────────────────────────────────────
+async function submitScore() {
+  const submitBtn = document.getElementById('lb-submit-btn');
+  const statusEl  = document.getElementById('lb-status');
+  if (submitBtn) submitBtn.disabled = true;
+  if (statusEl)  statusEl.textContent = t.lbSending;
+
+  try {
+    const res = await fetch(`${DB_URL}/leaderboard/${playerId}.json`, {
+      method:  'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ name: playerName, score: Math.floor(totalEarned), ts: Date.now() }),
+    });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    if (statusEl) statusEl.textContent = t.lbSent;
+    setTimeout(() => { if (statusEl) statusEl.textContent = ''; }, 3000);
+  } catch(e) {
+    if (statusEl) statusEl.textContent = '❌ Ошибка: ' + e.message;
+  } finally {
+    if (submitBtn) submitBtn.disabled = false;
+  }
+}
+
+async function loadLeaderboard() {
+  const listEl = document.getElementById('lb-list');
+  listEl.innerHTML = '<div class="lb-empty">Загрузка...</div>';
+
+  try {
+    const res = await fetch(`${DB_URL}/leaderboard.json`);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+
+    if (!data) {
+      listEl.innerHTML = `<div class="lb-empty">${t.lbEmpty}</div>`;
+      return;
+    }
+
+    const entries = Object.entries(data).map(([id, val]) => ({ id, ...val }));
+    entries.sort((a, b) => b.score - a.score);
+    entries.splice(10);
+
+    const medals = ['🥇','🥈','🥉'];
+    listEl.innerHTML = entries.map((e, idx) => `
+      <div class="lb-row ${e.id === playerId ? 'lb-me' : ''}">
+        <span class="lb-rank">${medals[idx] || (idx + 1) + '.'}</span>
+        <span class="lb-name">${e.name}${e.id === playerId ? ' 👈' : ''}</span>
+        <span class="lb-score">${fmt(e.score)}</span>
+      </div>
+    `).join('');
+  } catch(e) {
+    listEl.innerHTML = '<div class="lb-empty">❌ ' + e.message + '</div>';
+  }
+}
+
+function openLeaderboard() {
+  document.getElementById('lb-myname').textContent      = '👤 ' + playerName;
+  document.getElementById('lb-myscore-val').textContent = fmt(totalEarned);
+  document.getElementById('lb-overlay').classList.add('open');
+  loadLeaderboard();
+}
+
+function closeLeaderboard() {
+  document.getElementById('lb-overlay').classList.remove('open');
+}
+
+// кнопки лидерборда
+document.getElementById('lb-btn').onclick       = openLeaderboard;
+document.getElementById('lb-close-btn').onclick = closeLeaderboard;
+document.getElementById('lb-refresh').onclick   = loadLeaderboard;
+document.getElementById('lb-submit-btn').onclick = async () => {
+  await submitScore();
+  await loadLeaderboard();
+};
+// закрыть по клику на фон
+document.getElementById('lb-overlay').onclick = (e) => {
+  if (e.target === document.getElementById('lb-overlay')) closeLeaderboard();
+};
+
+// ── Настройки ─────────────────────────────────────────────
+document.getElementById('settings-btn').onclick = () => {
+  document.getElementById('settings-overlay').classList.add('open');
+};
+document.getElementById('settings-close-btn').onclick = () => {
+  document.getElementById('settings-overlay').classList.remove('open');
+};
+document.getElementById('settings-overlay').onclick = (e) => {
+  if (e.target === document.getElementById('settings-overlay'))
+    document.getElementById('settings-overlay').classList.remove('open');
+};
+document.getElementById('snd-toggle').onchange = (e) => {
+  soundEnabled = e.target.checked;
+};
+document.getElementById('snd-volume').oninput = (e) => {
+  soundVolume = e.target.value / 100;
+};
+document.querySelectorAll('.lang-btn').forEach(btn => {
+  btn.onclick = () => applyLang(btn.dataset.lang);
+});
+
+// авто-отправка каждые 2 минуты
+setInterval(() => {
+  if (playerId && totalEarned > 0) submitScore().catch(() => {});
+}, 120000);
+</script>
+</body>
+</html>
