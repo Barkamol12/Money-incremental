@@ -2,58 +2,63 @@
 <html>
 <head>
     <style>
-        body { background: #0f172a; color: #f1f5f9; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; }
-        .box { background: #1e293b; padding: 25px; border-radius: 15px; width: 350px; border: 1px solid #3b82f6; }
-        .stat { margin: 10px 0; font-weight: bold; }
-        button { width: 100%; padding: 10px; margin: 5px 0; border: none; border-radius: 5px; background: #2563eb; color: white; cursor: pointer; }
+        body { background: #0f172a; color: white; font-family: sans-serif; display: flex; justify-content: center; padding: 20px; }
+        .container { width: 400px; }
+        .card { background: #1e293b; padding: 15px; margin-bottom: 10px; border-radius: 10px; border: 1px solid #334155; }
+        button { background: #2563eb; border: none; padding: 10px; color: white; border-radius: 5px; cursor: pointer; width: 100%; }
+        .val { color: #22c55e; font-weight: bold; }
     </style>
 </head>
 <body>
-    <div class="box">
-        <h3>⚽ RPG Career: <span id="nick">Barkamol</span></h3>
-        <div class="stat">⚡ Энергия: <span id="energy">100</span>/100</div>
-        <div class="stat">🏆 Репутация: <span id="rep">0</span></div>
-        <hr>
-        <button onclick="train()">Тренировка (Энергия -10)</button>
-        <button onclick="match()">Сыграть матч (Энергия -30)</button>
-        <button onclick="sleep()">Сон (Восстановить энергию)</button>
+    <div class="container">
+        <h2>💰 Капитал: $<span id="balance">1000</span></h2>
+        
+        <div id="business-list"></div>
     </div>
 
     <script>
-        let player = { energy: 100, rep: 0 };
+        let state = {
+            balance: 1000,
+            businesses: [
+                { name: "Кафе", level: 1, cost: 500, profit: 50 },
+                { name: "Магазин", level: 1, cost: 2000, profit: 200 },
+                { name: "Завод", level: 1, cost: 10000, profit: 1000 }
+            ]
+        };
 
-        function updateUI() {
-            document.getElementById('energy').innerText = player.energy;
-            document.getElementById('rep').innerText = player.rep;
+        function render() {
+            let list = document.getElementById('business-list');
+            list.innerHTML = "";
+            state.businesses.forEach((b, i) => {
+                list.innerHTML += `
+                    <div class="card">
+                        <b>${b.name} (Ур. ${b.level})</b><br>
+                        Доход: <span class="val">$${b.profit * b.level}/час</span><br>
+                        <button onclick="upgrade(${i})">Улучшить ($${b.cost * b.level})</button>
+                    </div>
+                `;
+            });
+            document.getElementById('balance').innerText = Math.floor(state.balance);
         }
 
-        function train() {
-            if (player.energy >= 10) {
-                player.energy -= 10;
-                player.rep += 5; // Улучшение навыка
-                updateUI();
-            } else { alert("Нужен отдых!"); }
+        function upgrade(index) {
+            let b = state.businesses[index];
+            let price = b.cost * b.level;
+            if (state.balance >= price) {
+                state.balance -= price;
+                b.level++;
+                render();
+            }
         }
 
-        function match() {
-            if (player.energy >= 30) {
-                player.energy -= 30;
-                // Шанс на победу 60%
-                if (Math.random() > 0.4) {
-                    player.rep += 50;
-                    alert("Победа в матче!");
-                } else {
-                    player.rep += 10;
-                    alert("Ничья / Поражение.");
-                }
-                updateUI();
-            } else { alert("Слишком устал для матча!"); }
-        }
+        setInterval(() => {
+            state.businesses.forEach(b => {
+                state.balance += (b.profit * b.level) / 3600; // Доход в секунду (как 1 час)
+            });
+            render();
+        }, 1000);
 
-        function sleep() {
-            player.energy = 100;
-            updateUI();
-        }
+        render();
     </script>
 </body>
 </html>
