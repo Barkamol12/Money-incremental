@@ -347,6 +347,550 @@
     .lang-btn:hover  { background: #1a5a9a; color: #fff; }
     .lang-btn.active { background: #e94560; color: #fff; border-color: #e94560; }
 
+    #theme-btns { display: flex; gap: 6px; }
+    .theme-btn {
+      width: 28px; height: 28px; border-radius: 50%;
+      border: 3px solid transparent; cursor: pointer;
+      transition: transform 0.15s, border-color 0.15s;
+    }
+    .theme-btn:hover  { transform: scale(1.15); }
+    .theme-btn.active { border-color: #fff; }
+
+    /* ===== РЕЖИМ ПОКУПКИ ===== */
+    #buy-mode-bar {
+      display: flex; justify-content: center; gap: 8px;
+      padding: 10px 16px 0; max-width: 860px; margin: 0 auto;
+    }
+    .buy-mode-btn {
+      background: #0f3460; color: #aaa; border: 1px solid #1a3a6a;
+      border-radius: 8px; padding: 6px 18px; cursor: pointer;
+      font-weight: bold; font-size: 0.85rem; transition: all 0.15s;
+    }
+    .buy-mode-btn:hover  { background: #1a5a9a; color: #fff; }
+    .buy-mode-btn.active { background: #e94560; color: #fff; border-color: #e94560; }
+
+    /* ===== ОНЛАЙН СПИСОК ===== */
+    #online-btn {
+      background: transparent; color: #4caf50;
+      border: 1px solid #2a5a2a; border-radius: 8px;
+      padding: 6px 10px; cursor: pointer; font-size: 0.82rem; font-weight: bold;
+    }
+    #online-btn:hover { background: #1a3a1a; }
+
+    #online-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.75); z-index: 300;
+      align-items: center; justify-content: center;
+    }
+    #online-overlay.open { display: flex; }
+    #online-panel {
+      background: #16213e; border: 2px solid #4caf50;
+      border-radius: 18px; padding: 24px; width: 360px;
+      max-width: 92vw; max-height: 80vh; overflow-y: auto;
+      display: flex; flex-direction: column; gap: 12px;
+    }
+    #online-panel h2 { color: #4caf50; text-align: center; font-size: 1.3rem; }
+    .online-row {
+      display: flex; align-items: center; gap: 10px;
+      background: #0f3460; border-radius: 8px; padding: 10px 14px;
+    }
+    .online-dot { width: 10px; height: 10px; border-radius: 50%; background: #4caf50; flex-shrink: 0; }
+    .online-name { flex: 1; font-size: 0.9rem; }
+    .online-time { font-size: 0.75rem; color: #aaa; }
+    .btn-online-close {
+      background: #0f3460; color: #fff; border: 1px solid #1a5a9a;
+      border-radius: 8px; padding: 10px; width: 100%; cursor: pointer; font-weight: bold;
+    }
+    .btn-online-close:hover { background: #1a5a9a; }
+
+    /* ===== ЕЖЕДНЕВНАЯ НАГРАДА ===== */
+    #daily-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.85); z-index: 600;
+      align-items: center; justify-content: center;
+    }
+    #daily-overlay.open { display: flex; }
+    #daily-panel {
+      background: #16213e; border: 2px solid #ffd700;
+      border-radius: 20px; padding: 28px; width: 380px;
+      max-width: 92vw; text-align: center;
+      display: flex; flex-direction: column; gap: 16px;
+      animation: dailyPop 0.4s ease-out;
+    }
+    @keyframes dailyPop {
+      from { transform: scale(0.7); opacity: 0; }
+      to   { transform: scale(1);   opacity: 1; }
+    }
+    #daily-panel h2 { color: #ffd700; font-size: 1.5rem; }
+    .daily-streak { display: flex; justify-content: center; gap: 8px; }
+    .daily-day {
+      width: 36px; height: 36px; border-radius: 8px;
+      background: #0f3460; border: 1px solid #1a3a6a;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.75rem; color: #aaa; flex-direction: column; gap: 1px;
+    }
+    .daily-day.claimed { background: #1a3a00; border-color: #4caf50; color: #4caf50; }
+    .daily-day.today   { background: #2a1a00; border-color: #ffd700; color: #ffd700; animation: goldPulse 0.8s infinite alternate; }
+    .daily-reward-big { font-size: 2.5rem; font-weight: bold; color: #ffd700; }
+    .btn-daily-claim {
+      background: linear-gradient(135deg, #b8860b, #ffd700);
+      color: #000; border: none; border-radius: 12px;
+      padding: 14px; font-size: 1.1rem; font-weight: bold;
+      cursor: pointer; width: 100%;
+    }
+    .btn-daily-claim:hover { opacity: 0.9; }
+
+    /* ===== АВТО СОБЫТИЯ (тост) ===== */
+    .auto-event-toast {
+      position: fixed; top: 80px; left: 50%; transform: translateX(-50%);
+      background: #16213e; border: 2px solid #ffd700;
+      border-radius: 14px; padding: 12px 20px;
+      display: flex; align-items: center; gap: 12px;
+      z-index: 200; min-width: 260px; max-width: 90vw;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+      animation: achIn 0.4s ease-out;
+    }
+    .auto-event-toast.bad  { border-color: #e94560; }
+    .auto-event-toast.good { border-color: #4caf50; }
+
+    /* ===== ПРОФИЛЬ ===== */
+    #profile-btn {
+      width: 36px; height: 36px; border-radius: 50%;
+      border: 2px solid #e94560; cursor: pointer;
+      background: #0f3460; overflow: hidden; padding: 0;
+      flex-shrink: 0;
+    }
+    #profile-btn img { width: 100%; height: 100%; object-fit: cover; }
+    #profile-btn-initials {
+      width: 100%; height: 100%; display: flex;
+      align-items: center; justify-content: center;
+      font-size: 0.9rem; font-weight: bold; color: #fff;
+    }
+
+    #profile-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.75); z-index: 400;
+      align-items: center; justify-content: center;
+    }
+    #profile-overlay.open { display: flex; }
+
+    #profile-panel {
+      background: #16213e; border: 2px solid #e94560;
+      border-radius: 18px; padding: 24px; width: 420px;
+      max-width: 92vw; max-height: 85vh; overflow-y: auto;
+      display: flex; flex-direction: column; gap: 14px;
+    }
+
+    .profile-header {
+      display: flex; align-items: center; gap: 16px;
+    }
+    .profile-avatar {
+      width: 64px; height: 64px; border-radius: 50%;
+      border: 3px solid #e94560; object-fit: cover;
+      background: #0f3460; flex-shrink: 0;
+    }
+    .profile-avatar-initials {
+      width: 64px; height: 64px; border-radius: 50%;
+      border: 3px solid #e94560; background: #0f3460;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem; font-weight: bold; flex-shrink: 0;
+    }
+    .profile-name-block { flex: 1; }
+    .profile-name { font-size: 1.2rem; font-weight: bold; }
+    .profile-status { font-size: 0.85rem; margin-top: 4px; }
+    .status-online  { color: #4caf50; }
+    .status-offline { color: #888; }
+
+    .profile-stats {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .stat-box {
+      background: #0f3460; border-radius: 10px;
+      padding: 12px; text-align: center;
+    }
+    .stat-value { font-size: 1.1rem; font-weight: bold; color: #ffd700; }
+    .stat-label { font-size: 0.75rem; color: #aaa; margin-top: 4px; }
+
+    .profile-biz-title {
+      font-size: 1rem; font-weight: bold; color: #e94560;
+    }
+    .profile-biz-list { display: flex; flex-direction: column; gap: 6px; }
+    .profile-biz-row {
+      display: flex; align-items: center; gap: 10px;
+      background: #0f3460; border-radius: 8px; padding: 8px 12px;
+    }
+    .profile-biz-row.locked { opacity: 0.3; }
+    .profile-biz-icon { font-size: 1.4rem; }
+    .profile-biz-name { flex: 1; font-size: 0.9rem; }
+    .profile-biz-cnt  { color: #e94560; font-weight: bold; font-size: 0.9rem; }
+    .profile-biz-lvl  { color: #bb86fc; font-size: 0.8rem; }
+
+    .btn-profile-close {
+      background: #0f3460; color: #fff;
+      border: 1px solid #1a5a9a; border-radius: 8px;
+      padding: 10px; width: 100%; cursor: pointer; font-weight: bold;
+    }
+    .btn-profile-close:hover { background: #1a5a9a; }
+
+    /* ===== ДОСТИЖЕНИЯ ===== */
+    .ach-toast {
+      position: fixed; bottom: 24px; left: 50%;
+      transform: translateX(-50%);
+      background: #16213e; border: 2px solid #ffd700;
+      border-radius: 14px; padding: 14px 20px;
+      display: flex; align-items: center; gap: 14px;
+      z-index: 999; min-width: 280px; max-width: 90vw;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.5);
+      animation: achIn 0.4s ease-out;
+    }
+    @keyframes achIn {
+      from { opacity: 0; transform: translateX(-50%) translateY(30px); }
+      to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+    .ach-toast-icon { font-size: 2rem; }
+    .ach-toast-body { flex: 1; }
+    .ach-toast-title { font-weight: bold; color: #ffd700; font-size: 0.95rem; }
+    .ach-toast-desc  { font-size: 0.8rem; color: #aaa; margin-top: 2px; }
+    .ach-toast-reward { color: #4caf50; font-weight: bold; font-size: 0.85rem; margin-top: 4px; }
+
+    #ach-btn {
+      background: transparent; color: #aaa;
+      border: 1px solid #333; border-radius: 8px;
+      padding: 6px 10px; cursor: pointer; font-size: 1rem;
+    }
+    #ach-btn:hover { color: #ffd700; border-color: #ffd700; }
+
+    #ach-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.75); z-index: 300;
+      align-items: center; justify-content: center;
+    }
+    #ach-overlay.open { display: flex; }
+    #ach-panel {
+      background: #16213e; border: 2px solid #ffd700;
+      border-radius: 18px; padding: 24px; width: 440px;
+      max-width: 92vw; max-height: 85vh; overflow-y: auto;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    #ach-panel h2 { color: #ffd700; text-align: center; font-size: 1.4rem; }
+
+    .ach-row {
+      display: flex; align-items: center; gap: 12px;
+      background: #0f3460; border-radius: 10px; padding: 12px;
+      border: 1px solid #1a3a6a;
+    }
+    .ach-row.done { border-color: #ffd700; background: #1a1a00; }
+    .ach-row.done .ach-row-name { color: #ffd700; }
+    .ach-row-icon { font-size: 1.8rem; }
+    .ach-row-info { flex: 1; }
+    .ach-row-name { font-weight: bold; font-size: 0.95rem; }
+    .ach-row-desc { font-size: 0.78rem; color: #aaa; margin-top: 2px; }
+    .ach-row-reward { font-size: 0.78rem; color: #4caf50; margin-top: 2px; }
+    .ach-row-check { font-size: 1.4rem; }
+
+    .btn-ach-close {
+      background: #0f3460; color: #fff; border: 1px solid #1a5a9a;
+      border-radius: 8px; padding: 10px; width: 100%;
+      cursor: pointer; font-weight: bold;
+    }
+    .btn-ach-close:hover { background: #1a5a9a; }
+
+    /* ===== ПРЕСТИЖ ===== */
+    #prestige-btn {
+      background: linear-gradient(135deg, #7c3aed, #a855f7);
+      color: #fff; border: none; border-radius: 8px;
+      padding: 8px 14px; cursor: pointer; font-weight: bold;
+      font-size: 0.9rem; display: none;
+      animation: prestigeGlow 1.5s infinite alternate;
+    }
+    @keyframes prestigeGlow {
+      from { box-shadow: 0 0 8px #7c3aed; }
+      to   { box-shadow: 0 0 20px #a855f7; }
+    }
+    #prestige-btn.visible { display: block; }
+
+    #prestige-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.8); z-index: 300;
+      align-items: center; justify-content: center;
+    }
+    #prestige-overlay.open { display: flex; }
+    #prestige-panel {
+      background: #16213e; border: 2px solid #a855f7;
+      border-radius: 18px; padding: 28px; width: 400px;
+      max-width: 92vw; display: flex; flex-direction: column;
+      gap: 16px; text-align: center;
+    }
+    #prestige-panel h2 { color: #a855f7; font-size: 1.5rem; }
+    .prestige-stat {
+      background: #0f3460; border-radius: 10px; padding: 12px;
+    }
+    .prestige-stat-label { color: #aaa; font-size: 0.85rem; }
+    .prestige-stat-value { color: #ffd700; font-size: 1.3rem; font-weight: bold; margin-top: 4px; }
+    .prestige-warn {
+      color: #e94560; font-size: 0.9rem;
+      background: #2a0a0a; border-radius: 8px; padding: 10px;
+    }
+    .btn-prestige-do {
+      background: linear-gradient(135deg, #7c3aed, #a855f7);
+      color: #fff; border: none; border-radius: 10px;
+      padding: 14px; font-size: 1rem; font-weight: bold;
+      cursor: pointer;
+    }
+    .btn-prestige-do:hover { opacity: 0.9; }
+    .btn-prestige-cancel {
+      background: #1a1a2e; color: #aaa;
+      border: 1px solid #333; border-radius: 10px;
+      padding: 10px; font-size: 0.9rem; cursor: pointer;
+    }
+    .btn-prestige-cancel:hover { color: #fff; }
+
+    /* ===== ИСТОРИЯ ===== */
+    #history-btn {
+      background: transparent; color: #aaa;
+      border: 1px solid #333; border-radius: 8px;
+      padding: 6px 10px; cursor: pointer; font-size: 1rem;
+    }
+    #history-btn:hover { color: #4caf50; border-color: #4caf50; }
+
+    #history-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.75); z-index: 300;
+      align-items: center; justify-content: center;
+    }
+    #history-overlay.open { display: flex; }
+    #history-panel {
+      background: #16213e; border: 2px solid #4caf50;
+      border-radius: 18px; padding: 24px; width: 500px;
+      max-width: 95vw; display: flex; flex-direction: column; gap: 14px;
+    }
+    #history-panel h2 { color: #4caf50; text-align: center; font-size: 1.3rem; }
+    #history-canvas { border-radius: 10px; background: #0a0a1a; width: 100%; }
+    #history-summary {
+      display: flex; justify-content: space-around;
+      background: #0f3460; border-radius: 10px; padding: 12px;
+    }
+    .history-stat { text-align: center; }
+    .history-stat-val { font-size: 1.1rem; font-weight: bold; color: #4caf50; }
+    .history-stat-lbl { font-size: 0.75rem; color: #aaa; margin-top: 2px; }
+    .btn-history-close {
+      background: #0f3460; color: #fff; border: 1px solid #1a5a9a;
+      border-radius: 8px; padding: 10px; width: 100%;
+      cursor: pointer; font-weight: bold;
+    }
+    .btn-history-close:hover { background: #1a5a9a; }
+
+    /* ===== АДМИН ПАНЕЛЬ ===== */
+    #admin-btn {
+      background: #2a0a0a; color: #e94560;
+      border: 1px solid #4a1a1a; border-radius: 8px;
+      padding: 6px 10px; cursor: pointer; font-size: 0.85rem;
+      display: none;
+    }
+    #admin-btn.visible { display: block; }
+    #admin-btn:hover { background: #3a1a1a; }
+
+    #admin-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.85); z-index: 500;
+      align-items: center; justify-content: center;
+    }
+    #admin-overlay.open { display: flex; }
+    #admin-panel {
+      background: #0d0d1a; border: 2px solid #e94560;
+      border-radius: 18px; padding: 24px; width: 520px;
+      max-width: 95vw; max-height: 90vh; overflow-y: auto;
+      display: flex; flex-direction: column; gap: 16px;
+    }
+    #admin-panel h2 { color: #e94560; text-align: center; font-size: 1.4rem; }
+
+    .admin-section {
+      background: #16213e; border: 1px solid #1a3a6a;
+      border-radius: 12px; padding: 14px;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .admin-section h3 { color: #aaa; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
+
+    .admin-player-row {
+      display: flex; align-items: center; gap: 10px;
+      background: #0f3460; border-radius: 8px; padding: 8px 12px;
+    }
+    .admin-player-name { flex: 1; font-size: 0.9rem; }
+    .admin-player-score { color: #ffd700; font-size: 0.85rem; }
+    .admin-player-status { font-size: 0.75rem; }
+    .btn-admin-delete {
+      background: #2a0a0a; color: #e94560; border: 1px solid #4a1a1a;
+      border-radius: 6px; padding: 4px 10px; cursor: pointer; font-size: 0.8rem;
+    }
+    .btn-admin-delete:hover { background: #3a1a1a; }
+
+    .admin-input-row { display: flex; gap: 8px; }
+    .admin-input {
+      flex: 1; background: #0f3460; color: #fff;
+      border: 1px solid #1a5a9a; border-radius: 8px;
+      padding: 8px 12px; font-size: 0.9rem;
+    }
+    .btn-admin-action {
+      background: #0f3460; color: #fff; border: 1px solid #1a5a9a;
+      border-radius: 8px; padding: 8px 14px; cursor: pointer; font-weight: bold;
+    }
+    .btn-admin-action:hover { background: #1a5a9a; }
+    .btn-admin-action.red { background: #2a0a0a; color: #e94560; border-color: #4a1a1a; }
+    .btn-admin-action.red:hover { background: #3a1a1a; }
+    .btn-admin-action.green { background: #0a2a0a; color: #4caf50; border-color: #1a4a1a; }
+    .btn-admin-action.green:hover { background: #1a3a1a; }
+    .btn-admin-action.purple { background: #1a0a2a; color: #bb86fc; border-color: #3a1a4a; }
+    .btn-admin-action.purple:hover { background: #2a1a3a; }
+
+    .admin-stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .admin-stat-box { background: #0f3460; border-radius: 8px; padding: 10px; text-align: center; }
+    .admin-stat-val { font-size: 1.2rem; font-weight: bold; color: #ffd700; }
+    .admin-stat-lbl { font-size: 0.72rem; color: #aaa; margin-top: 2px; }
+
+    .event-banner {
+      position: fixed; top: 70px; left: 50%; transform: translateX(-50%);
+      background: linear-gradient(135deg, #7c3aed, #a855f7);
+      color: #fff; border-radius: 12px; padding: 10px 20px;
+      font-weight: bold; font-size: 0.95rem; z-index: 200;
+      box-shadow: 0 4px 20px #7c3aed66; white-space: nowrap;
+    }
+
+    /* ===== ПОЧТА ===== */
+    #mail-btn {
+      position: relative;
+      background: transparent; color: #aaa;
+      border: 1px solid #333; border-radius: 8px;
+      padding: 6px 10px; cursor: pointer; font-size: 1rem;
+    }
+    #mail-btn:hover { color: #fff; border-color: #555; }
+    #mail-badge {
+      position: absolute; top: -7px; right: -7px;
+      background: #e94560; color: #fff; border-radius: 50%;
+      width: 18px; height: 18px; font-size: 0.68rem; font-weight: bold;
+      display: none; align-items: center; justify-content: center;
+    }
+    #mail-badge.show { display: flex; }
+
+    #mail-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.75); z-index: 300;
+      align-items: center; justify-content: center;
+    }
+    #mail-overlay.open { display: flex; }
+    #mail-panel {
+      background: #16213e; border: 2px solid #0f3460;
+      border-radius: 18px; width: 480px; max-width: 95vw;
+      max-height: 88vh; display: flex; flex-direction: column;
+      overflow: hidden;
+    }
+    #mail-header {
+      padding: 16px 20px 0; display: flex;
+      align-items: center; gap: 10px;
+    }
+    #mail-header h2 { flex: 1; color: #fff; font-size: 1.2rem; }
+    #mail-close-btn {
+      background: none; border: none; color: #aaa;
+      font-size: 1.2rem; cursor: pointer; padding: 4px 8px;
+    }
+    #mail-close-btn:hover { color: #fff; }
+
+    .mail-tabs {
+      display: flex; gap: 0; padding: 12px 20px 0;
+    }
+    .mail-tab {
+      flex: 1; padding: 10px; text-align: center;
+      cursor: pointer; border-bottom: 2px solid #0f3460;
+      color: #aaa; font-size: 0.9rem; font-weight: bold;
+      transition: color 0.15s;
+    }
+    .mail-tab.active { color: #fff; border-bottom-color: #e94560; }
+    .mail-tab-badge {
+      display: inline-block; background: #e94560; color: #fff;
+      border-radius: 10px; padding: 1px 6px;
+      font-size: 0.65rem; margin-left: 4px; vertical-align: middle;
+    }
+
+    #mail-content { flex: 1; overflow-y: auto; padding: 14px 20px; }
+
+    .mail-msg {
+      background: #0f3460; border-radius: 10px;
+      padding: 12px 14px; margin-bottom: 8px;
+      border-left: 3px solid transparent;
+      cursor: pointer; transition: background 0.15s;
+    }
+    .mail-msg:hover { background: #1a4a80; }
+    .mail-msg.unread { border-left-color: #e94560; }
+    .mail-msg-from { font-size: 0.8rem; color: #aaa; margin-bottom: 4px; }
+    .mail-msg-from span { color: #ffd700; font-weight: bold; }
+    .mail-msg-text { font-size: 0.9rem; color: #eee; }
+    .mail-msg-time { font-size: 0.72rem; color: #555; margin-top: 4px; }
+    .mail-msg.unread .mail-msg-text { font-weight: bold; color: #fff; }
+
+    .mail-empty { text-align: center; color: #555; padding: 30px 0; font-size: 0.9rem; }
+
+    #mail-footer { padding: 12px 20px; border-top: 1px solid #0f3460; }
+    #mail-compose-area { display: flex; flex-direction: column; gap: 8px; }
+    .mail-select {
+      background: #0f3460; color: #fff; border: 1px solid #1a5a9a;
+      border-radius: 8px; padding: 8px 12px; font-size: 0.85rem; width: 100%;
+    }
+    .mail-textarea {
+      background: #0f3460; color: #fff; border: 1px solid #1a5a9a;
+      border-radius: 8px; padding: 10px 12px; font-size: 0.85rem;
+      width: 100%; resize: none; height: 70px; font-family: inherit;
+    }
+    .mail-textarea::placeholder { color: #556; }
+    .btn-mail-send {
+      background: #e94560; color: #fff; border: none;
+      border-radius: 8px; padding: 10px; font-weight: bold;
+      cursor: pointer; width: 100%;
+    }
+    .btn-mail-send:hover { background: #ff6b81; }
+    .btn-mail-send:disabled { opacity: 0.4; cursor: default; }
+
+    .mail-player-row {
+      display: flex; align-items: center; gap: 12px;
+      background: #0f3460; border-radius: 10px; padding: 12px 14px;
+      margin-bottom: 8px; cursor: pointer; transition: background 0.15s;
+    }
+    .mail-player-row:hover { background: #1a4a80; }
+    .mail-player-avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: #1a3a6a; display: flex; align-items: center;
+      justify-content: center; font-size: 1rem; flex-shrink: 0;
+    }
+    .mail-player-name { flex: 1; font-weight: bold; font-size: 0.9rem; }
+    .mail-player-unread {
+      background: #e94560; color: #fff; border-radius: 50%;
+      width: 20px; height: 20px; font-size: 0.7rem;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .msg-bubble {
+      max-width: 80%; padding: 9px 13px; border-radius: 12px;
+      margin-bottom: 8px; font-size: 0.88rem; line-height: 1.4;
+    }
+    .msg-bubble.received {
+      background: #0f3460; color: #eee; align-self: flex-start;
+      border-bottom-left-radius: 4px;
+    }
+    .msg-bubble.sent {
+      background: #e94560; color: #fff; align-self: flex-end;
+      border-bottom-right-radius: 4px; margin-left: auto;
+    }
+    .msg-bubble-time { font-size: 0.68rem; opacity: 0.6; margin-top: 3px; }
+    #mail-convo {
+      display: flex; flex-direction: column; padding: 4px 0;
+    }
+
+    .btn-back-players {
+      background: #0f3460; color: #aaa; border: 1px solid #1a3a6a;
+      border-radius: 8px; padding: 6px 14px; cursor: pointer;
+      font-size: 0.82rem; margin-bottom: 10px; display: inline-block;
+    }
+    .btn-back-players:hover { color: #fff; }
+
     /* ===== МОБИЛЬНАЯ ВЕРСИЯ ===== */
     @media (max-width: 600px) {
       #header {
@@ -421,8 +965,192 @@
     <div class="money-amount" id="money-display">$0</div>
     <div class="money-ps"    id="ps-display">$0/сек</div>
   </div>
+  <button id="online-btn">🟢 0</button>
+  <button id="mail-btn">📬<span id="mail-badge"></span></button>
+  <button id="admin-btn">🛡️ Admin</button>
+  <button id="history-btn">📊</button>
+  <button id="prestige-btn">⭐ Престиж</button>
+  <button id="ach-btn" title="Достижения">🏅</button>
   <button id="settings-btn">⚙️</button>
+  <button id="profile-btn" title="Профиль"><div id="profile-btn-initials">?</div></button>
   <button id="signout-btn">Выйти</button>
+</div>
+
+<!-- ===== АДМИН ПАНЕЛЬ ===== -->
+<div id="admin-overlay">
+  <div id="admin-panel">
+    <h2>🛡️ Admin Panel</h2>
+
+    <!-- Статистика -->
+    <div class="admin-section">
+      <h3>📊 Статистика</h3>
+      <div class="admin-stat-grid" id="admin-stats"></div>
+    </div>
+
+    <!-- Игроки -->
+    <div class="admin-section">
+      <h3>👥 Игроки</h3>
+      <div id="admin-players-list">Загрузка...</div>
+    </div>
+
+
+    <!-- Событие -->
+    <div class="admin-section">
+      <h3>📢 Событие для всех</h3>
+      <div class="admin-input-row">
+        <select class="admin-input" id="admin-event-type">
+          <option value="double_income">💰 Двойной доход (10 мин)</option>
+          <option value="triple_income">⚡ Тройной доход (5 мин)</option>
+          <option value="free_money">🎁 Дать всем $1M</option>
+        </select>
+        <button class="btn-admin-action purple" id="admin-send-event-btn">Отправить</button>
+      </div>
+      <button class="btn-admin-action red" id="admin-stop-event-btn">⛔ Остановить событие</button>
+    </div>
+
+    <!-- Скрыть профиль -->
+    <div class="admin-section">
+      <h3>🔒 Мой профиль</h3>
+      <div style="display:flex;align-items:center;gap:12px">
+        <span style="flex:1;font-size:0.9rem">Скрыть детали профиля от других</span>
+        <label class="toggle">
+          <input type="checkbox" id="admin-hide-profile">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div style="font-size:0.75rem;color:#555">Другие будут видеть только онлайн/офлайн статус</div>
+    </div>
+
+    <!-- Глобальное сообщение -->
+    <div class="admin-section">
+      <h3>📢 Глобальное сообщение</h3>
+      <div class="admin-input-row">
+        <input class="admin-input" type="text" id="admin-global-msg-input" placeholder="Текст сообщения...">
+        <button class="btn-admin-action purple" id="admin-send-global-msg-btn">Отправить</button>
+      </div>
+    </div>
+
+    <button class="btn-admin-action red" id="admin-reset-btn" style="width:100%">🗑️ Сбросить весь мой прогресс</button>
+    <button class="btn-admin-action" id="admin-close-btn" style="width:100%">✕ Закрыть</button>
+  </div>
+</div>
+
+<!-- ===== ОНЛАЙН ===== -->
+<div id="online-overlay">
+  <div id="online-panel">
+    <h2 id="online-title">🟢 Онлайн сейчас</h2>
+    <div id="online-list"><div class="mail-empty">Загрузка...</div></div>
+    <button class="btn-online-close" id="online-close-btn">✕ Закрыть</button>
+  </div>
+</div>
+
+<!-- ===== ЕЖЕДНЕВНАЯ НАГРАДА ===== -->
+<div id="daily-overlay">
+  <div id="daily-panel">
+    <h2 id="daily-title">🎁 Ежедневная награда</h2>
+    <div class="daily-streak" id="daily-streak"></div>
+    <div class="daily-reward-big" id="daily-reward-amount">$0</div>
+    <div style="color:#aaa;font-size:0.85rem" id="daily-streak-text">День 1</div>
+    <button class="btn-daily-claim" id="daily-claim-btn">🎁 Забрать награду!</button>
+  </div>
+</div>
+
+<!-- ===== ПОЧТА ===== -->
+<div id="mail-overlay">
+  <div id="mail-panel">
+    <div id="mail-header">
+      <h2 id="mail-title">📬 Почта</h2>
+      <button id="mail-close-btn">✕</button>
+    </div>
+    <div class="mail-tabs">
+      <div class="mail-tab active" id="tab-global" onclick="switchMailTab('global')">
+        🌐 <span id="tab-global-lbl">Глобальные</span><span id="global-tab-badge" class="mail-tab-badge" style="display:none"></span>
+      </div>
+      <div class="mail-tab" id="tab-personal" onclick="switchMailTab('personal')">
+        💬 <span id="tab-personal-lbl">Личные</span><span id="personal-tab-badge" class="mail-tab-badge" style="display:none"></span>
+      </div>
+    </div>
+    <div id="mail-content"></div>
+    <div id="mail-footer">
+      <div id="mail-compose-area">
+        <select class="mail-select" id="mail-to-select" style="display:none"></select>
+        <textarea class="mail-textarea" id="mail-text" placeholder="Написать сообщение..."></textarea>
+        <button class="btn-mail-send" id="mail-send-btn">📤 Отправить</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ИСТОРИЯ ===== -->
+<div id="history-overlay">
+  <div id="history-panel">
+    <h2 id="history-title">📊 История заработка</h2>
+    <canvas id="history-canvas" height="180"></canvas>
+    <div id="history-summary">
+      <div class="history-stat">
+        <div class="history-stat-val" id="hist-best">$0</div>
+        <div class="history-stat-lbl" id="hist-best-lbl">Лучшая минута</div>
+      </div>
+      <div class="history-stat">
+        <div class="history-stat-val" id="hist-avg">$0</div>
+        <div class="history-stat-lbl" id="hist-avg-lbl">Среднее/мин</div>
+      </div>
+      <div class="history-stat">
+        <div class="history-stat-val" id="hist-total">$0</div>
+        <div class="history-stat-lbl" id="hist-total-lbl">Всего заработано</div>
+      </div>
+    </div>
+    <button class="btn-history-close" id="history-close-btn">✕ Закрыть</button>
+  </div>
+</div>
+
+<!-- ===== ПРЕСТИЖ ===== -->
+<div id="prestige-overlay">
+  <div id="prestige-panel">
+    <h2 id="prestige-title">⭐ Престиж</h2>
+    <div class="prestige-stat">
+      <div class="prestige-stat-label" id="prestige-lbl-level">Уровень престижа:</div>
+      <div class="prestige-stat-value" id="prestige-level-val">0</div>
+    </div>
+    <div class="prestige-stat">
+      <div class="prestige-stat-label" id="prestige-lbl-mult">Текущий множитель:</div>
+      <div class="prestige-stat-value" id="prestige-mult-val">x1.0</div>
+    </div>
+    <div class="prestige-stat">
+      <div class="prestige-stat-label" id="prestige-lbl-next">После сброса получишь:</div>
+      <div class="prestige-stat-value" id="prestige-next-val">x1.5</div>
+    </div>
+    <div class="prestige-warn" id="prestige-warn">⚠️ Весь прогресс сбросится!</div>
+    <button class="btn-prestige-do" id="prestige-do-btn">Сделать престиж</button>
+    <button class="btn-prestige-cancel" id="prestige-cancel-btn">Отмена</button>
+  </div>
+</div>
+
+<!-- ===== ДОСТИЖЕНИЯ ===== -->
+<div id="ach-overlay">
+  <div id="ach-panel">
+    <h2 id="ach-title">🏅 Достижения</h2>
+    <div id="ach-list"></div>
+    <button class="btn-ach-close" id="ach-close-btn">✕ Закрыть</button>
+  </div>
+</div>
+
+<!-- ===== ПРОФИЛЬ ===== -->
+<div id="profile-overlay">
+  <div id="profile-panel">
+    <div class="profile-header">
+      <div id="profile-avatar-wrap"></div>
+      <div class="profile-name-block">
+        <div class="profile-name" id="profile-name-text"></div>
+        <div id="profile-title" style="font-size:0.85rem; color:#ffd700; font-weight:bold; margin-top:2px; display:none"></div>
+        <div class="profile-status" id="profile-status-text"></div>
+      </div>
+    </div>
+    <div class="profile-stats" id="profile-stats"></div>
+    <div class="profile-biz-title">🏢 Бизнесы</div>
+    <div class="profile-biz-list" id="profile-biz-list"></div>
+    <button class="btn-profile-close" id="profile-close-btn">✕ Закрыть</button>
+  </div>
 </div>
 
 <!-- ===== НАСТРОЙКИ ===== -->
@@ -441,6 +1169,16 @@
     <div class="setting-row">
       <span class="setting-label">🔉 Громкость</span>
       <input type="range" id="snd-volume" min="0" max="100" value="60">
+    </div>
+
+    <div class="setting-row">
+      <span class="setting-label" id="lbl-theme">🎨 Тема</span>
+      <div id="theme-btns">
+        <button class="theme-btn active" data-theme="dark"   style="background:#e94560" title="Тёмная"></button>
+        <button class="theme-btn"        data-theme="blue"   style="background:#00b4d8" title="Синяя"></button>
+        <button class="theme-btn"        data-theme="gold"   style="background:#ffc300" title="Золотая"></button>
+        <button class="theme-btn"        data-theme="purple" style="background:#bb86fc" title="Фиолетовая"></button>
+      </div>
     </div>
 
     <div class="setting-row">
@@ -549,6 +1287,27 @@ const LANGS = {
     resetBtn:'🗑️ Сбросить прогресс', closeBtn:'✕ Закрыть',
     confirmReset:'Точно сбросить весь прогресс?', confirmSignout:'Выйти из аккаунта?',
     bizNames:['Пиццерия','Кофейня','Магазин','Ресторан','Отель','Завод','Банк','Медиахолдинг'],
+    themeLabel:'🎨 Тема',
+    onlineTitle:'🟢 Онлайн сейчас', onlineClose:'✕ Закрыть', onlineEmpty:'Никого нет онлайн',
+    dailyTitle:'🎁 Ежедневная награда', dailyClaim:'🎁 Забрать!', dailyStreakText:'День',
+    mailTitle:'📬 Почта', mailGlobal:'🌐 Глобальные', mailPersonal:'💬 Личные',
+    mailSend:'📤 Отправить', mailPlaceholder:'Написать сообщение...', mailEmpty:'Нет сообщений',
+    mailTo:'Кому:', mailWriteMsg:'✉️ Написать сообщение', mailClose:'✕',
+    adminGlobalMsg:'📢 Глобальное сообщение',
+    achTitle:'🏅 Достижения', achClose:'✕ Закрыть', achReward:'Награда:',
+    achUnlocked:'Выполнено!', achLocked:'Не выполнено',
+    historyTitle:'📊 История заработка', historyClose:'✕ Закрыть',
+    histBest:'Лучшая минута', histAvg:'Среднее/мин', histTotal:'Всего заработано',
+    histNoData:'Играй чтобы собрать статистику',
+    prestigeBtn:'⭐ Престиж', prestigeTitle:'⭐ Престиж',
+    prestigeLevel:'Уровень престижа:', prestigeMult:'Текущий множитель:',
+    prestigeNext:'После сброса получишь:', prestigeWarn:'Весь прогресс сбросится!',
+    prestigeConfirm:'Сбросить всё и получить множитель?', prestigeDo:'Сделать престиж',
+    prestigeClose:'Отмена',
+    online:'🟢 Онлайн', offline:'⚫ Офлайн',
+    statEarned:'💰 Заработано', statTime:'⏱️ Время в игре',
+    statBiz:'🏢 Бизнесов', statRecord:'🏆 Рекорд',
+    profileBizTitle:'🏢 Бизнесы', profileClose:'✕ Закрыть', lvl:'Ур.',
   },
   en: {
     gameTitle:'💼 Business Empire', lbBtn:'🏆 Leaderboard', signout:'Sign out',
@@ -562,6 +1321,27 @@ const LANGS = {
     resetBtn:'🗑️ Reset progress', closeBtn:'✕ Close',
     confirmReset:'Really reset all progress?', confirmSignout:'Sign out of account?',
     bizNames:['Pizzeria','Coffee Shop','Store','Restaurant','Hotel','Factory','Bank','Media Holding'],
+    themeLabel:'🎨 Theme',
+    onlineTitle:'🟢 Online now', onlineClose:'✕ Close', onlineEmpty:'Nobody online',
+    dailyTitle:'🎁 Daily reward', dailyClaim:'🎁 Claim!', dailyStreakText:'Day',
+    mailTitle:'📬 Mail', mailGlobal:'🌐 Global', mailPersonal:'💬 Personal',
+    mailSend:'📤 Send', mailPlaceholder:'Write a message...', mailEmpty:'No messages',
+    mailTo:'To:', mailWriteMsg:'✉️ Send message', mailClose:'✕',
+    adminGlobalMsg:'📢 Global message',
+    achTitle:'🏅 Achievements', achClose:'✕ Close', achReward:'Reward:',
+    achUnlocked:'Completed!', achLocked:'Not completed',
+    historyTitle:'📊 Earnings History', historyClose:'✕ Close',
+    histBest:'Best minute', histAvg:'Avg/min', histTotal:'Total earned',
+    histNoData:'Play to collect statistics',
+    prestigeBtn:'⭐ Prestige', prestigeTitle:'⭐ Prestige',
+    prestigeLevel:'Prestige level:', prestigeMult:'Current multiplier:',
+    prestigeNext:'After reset you get:', prestigeWarn:'All progress will be reset!',
+    prestigeConfirm:'Reset everything and get multiplier?', prestigeDo:'Do Prestige',
+    prestigeClose:'Cancel',
+    online:'🟢 Online', offline:'⚫ Offline',
+    statEarned:'💰 Earned', statTime:'⏱️ Time played',
+    statBiz:'🏢 Businesses', statRecord:'🏆 Record',
+    profileBizTitle:'🏢 Businesses', profileClose:'✕ Close', lvl:'Lvl.',
   },
   uz: {
     gameTitle:"💼 Biznes Imperiyasi", lbBtn:'🏆 Reyting', signout:'Chiqish',
@@ -575,6 +1355,27 @@ const LANGS = {
     resetBtn:"🗑️ Progressni tiklash", closeBtn:'✕ Yopish',
     confirmReset:"Haqiqatan ham barcha progressni tiklash?", confirmSignout:"Hisobdan chiqish?",
     bizNames:["Pitseriya","Qahvaxona","Do'kon","Restoran","Mehmonxona","Zavod","Bank","Media xolding"],
+    themeLabel:"🎨 Mavzu",
+    onlineTitle:"🟢 Hozir onlayn", onlineClose:"✕ Yopish", onlineEmpty:"Hech kim onlayn emas",
+    dailyTitle:"🎁 Kunlik mukofot", dailyClaim:"🎁 Olish!", dailyStreakText:"Kun",
+    mailTitle:"📬 Pochta", mailGlobal:"🌐 Global", mailPersonal:"💬 Shaxsiy",
+    mailSend:"📤 Yuborish", mailPlaceholder:"Xabar yozing...", mailEmpty:"Xabarlar yo'q",
+    mailTo:"Kimga:", mailWriteMsg:"✉️ Xabar yozish", mailClose:"✕",
+    adminGlobalMsg:"📢 Global xabar",
+    achTitle:"🏅 Yutuqlar", achClose:"✕ Yopish", achReward:"Mukofot:",
+    achUnlocked:"Bajarildi!", achLocked:"Bajarilmagan",
+    historyTitle:"📊 Daromad tarixi", historyClose:"✕ Yopish",
+    histBest:"Eng yaxshi daqiqa", histAvg:"O'rtacha/daq", histTotal:"Jami ishlandi",
+    histNoData:"Statistika yig'ish uchun o'ynang",
+    prestigeBtn:"⭐ Prestij", prestigeTitle:"⭐ Prestij",
+    prestigeLevel:"Prestij darajasi:", prestigeMult:"Joriy ko'paytiruvchi:",
+    prestigeNext:"Tiklashdan keyin olasiz:", prestigeWarn:"Barcha progress tiklanadi!",
+    prestigeConfirm:"Hammasini tiklash va ko'paytiruvchi olish?", prestigeDo:"Prestij qilish",
+    prestigeClose:"Bekor qilish",
+    online:"🟢 Online", offline:"⚫ Oflayn",
+    statEarned:"💰 Ishlandi", statTime:"⏱️ O'yin vaqti",
+    statBiz:"🏢 Bizneslar", statRecord:"🏆 Rekord",
+    profileBizTitle:"🏢 Bizneslar", profileClose:"✕ Yopish", lvl:"Daraja",
   },
 };
 
@@ -606,6 +1407,11 @@ function applyLang(code) {
   document.querySelector('.setting-row:nth-child(3) .setting-label').textContent = t.volLabel;
   document.getElementById('lbl-lang').textContent         = t.langLabel;
   document.getElementById('settings-close-btn').textContent = t.closeBtn;
+  // достижения
+  document.getElementById('ach-btn').title = t.achTitle;
+  document.getElementById('history-btn').title  = t.historyTitle;
+  document.getElementById('lbl-theme').textContent = t.themeLabel;
+  document.getElementById('prestige-btn').textContent = t.prestigeBtn;
   // кнопки языков
   document.querySelectorAll('.lang-btn').forEach(b => {
     b.classList.toggle('active', b.dataset.lang === code);
@@ -617,16 +1423,971 @@ function applyLang(code) {
 // ── Игрок (заполняется после входа) ───────────────────────
 let playerId   = null;
 let playerName = null;
+let playerPhoto = null;
+let timePlayed  = 0;  // секунды
 
 let gameStarted = false;
 
+// время в игре
+setInterval(() => { if (playerId) timePlayed++; }, 1000);
+
+function formatTime(sec) {
+  const h = Math.floor(sec / 3600);
+  const m = Math.floor((sec % 3600) / 60);
+  const s = sec % 60;
+  if (h > 0) return h + 'ч ' + m + 'м';
+  if (m > 0) return m + 'м ' + s + 'с';
+  return s + 'с';
+}
+
+function totalBizsOwned() {
+  return state.reduce((sum, s) => sum + s.count, 0);
+}
+
+// ── Достижения ────────────────────────────────────────────
+const ACHIEVEMENTS = [
+  {
+    id: 'first_biz', icon: '🍕', reward: 50,
+    names: { ru:'Первый бизнес',    en:'First Business',    uz:'Birinchi biznes'   },
+    descs: { ru:'Купи первый бизнес', en:'Buy your first business', uz:"Birinchi biznesni sotib ol" },
+  },
+  {
+    id: 'earn_100', icon: '💰', reward: 100,
+    names: { ru:'Первые деньги',    en:'First Money',       uz:'Birinchi pul'      },
+    descs: { ru:'Заработай $100',   en:'Earn $100',         uz:"$100 ishlang"      },
+  },
+  {
+    id: 'first_manager', icon: '👔', reward: 500,
+    names: { ru:'Первый менеджер',  en:'First Manager',     uz:'Birinchi menejer'  },
+    descs: { ru:'Найми менеджера',  en:'Hire a manager',    uz:"Menejer yollang"   },
+  },
+  {
+    id: 'ten_biz', icon: '🏢', reward: 2000,
+    names: { ru:'Бизнесмен',        en:'Businessman',       uz:'Tadbirkor'         },
+    descs: { ru:'Владей 10 бизнесами', en:'Own 10 businesses', uz:"10 ta biznesga ega bo'l" },
+  },
+  {
+    id: 'five_upgrades', icon: '⬆️', reward: 3000,
+    names: { ru:'Инвестор',         en:'Investor',          uz:'Investor'          },
+    descs: { ru:'Сделай 5 улучшений', en:'Make 5 upgrades', uz:"5 ta yangilash qiling" },
+  },
+  {
+    id: 'all_types', icon: '🌐', reward: 50000,
+    names: { ru:'Все бизнесы',      en:'All Businesses',    uz:'Barcha bizneslar'  },
+    descs: { ru:'Купи все 8 видов', en:'Buy all 8 types',   uz:"8 ta turni sotib oling" },
+  },
+  {
+    id: 'earn_1m', icon: '💵', reward: 10000,
+    names: { ru:'Миллионер',        en:'Millionaire',       uz:'Millioner'         },
+    descs: { ru:'Заработай $1M',    en:'Earn $1M',          uz:"$1M ishlang"       },
+  },
+  {
+    id: 'all_managers', icon: '👑', reward: 200000,
+    names: { ru:'Империя',          en:'Empire',            uz:'Imperiya'          },
+    descs: { ru:'Найми всех менеджеров', en:'Hire all managers', uz:"Barcha menejerlarni yollang" },
+  },
+  {
+    id: 'earn_1b', icon: '💎', reward: 1000000,
+    names: { ru:'Миллиардер',       en:'Billionaire',       uz:'Milliarder'       },
+    descs: { ru:'Заработай $1B',    en:'Earn $1B',          uz:"$1B ishlang"       },
+  },
+  {
+    id: 'world_richest', icon: '👑', reward: 999999999,
+    names: { ru:'Самый богатый в мире', en:'Richest in the World', uz:"Dunyodagi eng boy" },
+    descs: { ru:'Владей 1000 каждого из 8 бизнесов', en:'Own 1000 of each of 8 businesses', uz:"Har 8 biznesdan 1000 taga ega bo'ling" },
+    title: { ru:'👑 Самый богатый в мире', en:'👑 Richest in the World', uz:"👑 Dunyodagi eng boy" },
+  },
+];
+
+let unlockedAch = new Set();
+
+function checkAchievements() {
+  const totalUpgrades = state.reduce((s, b) => s + b.upgrades, 0);
+
+  ACHIEVEMENTS.forEach(ach => {
+    if (unlockedAch.has(ach.id)) return;
+    let done = false;
+    if (ach.id === 'first_biz')      done = state.some(s => s.count >= 1);
+    if (ach.id === 'earn_100')       done = totalEarned >= 100;
+    if (ach.id === 'first_manager')  done = state.some(s => s.hasManager);
+    if (ach.id === 'ten_biz')        done = totalBizsOwned() >= 10;
+    if (ach.id === 'five_upgrades')  done = totalUpgrades >= 5;
+    if (ach.id === 'all_types')      done = state.every(s => s.count >= 1);
+    if (ach.id === 'earn_1m')        done = totalEarned >= 1e6;
+    if (ach.id === 'all_managers')   done = state.every(s => s.hasManager);
+    if (ach.id === 'earn_1b')        done = totalEarned >= 1e9;
+    if (ach.id === 'world_richest')  done = state.every(s => s.count >= 1000);
+
+    if (done) {
+      unlockedAch.add(ach.id);
+      money += ach.reward;
+      updateHeader();
+      showAchToast(ach);
+    }
+  });
+}
+
+function showAchToast(ach) {
+  const el = document.createElement('div');
+  el.className = 'ach-toast';
+  el.innerHTML = `
+    <div class="ach-toast-icon">${ach.icon}</div>
+    <div class="ach-toast-body">
+      <div class="ach-toast-title">${ach.names[currentLang] || ach.names.ru}</div>
+      <div class="ach-toast-desc">${ach.descs[currentLang] || ach.descs.ru}</div>
+      <div class="ach-toast-reward">+${fmt(ach.reward)}</div>
+    </div>
+    <div>✅</div>
+  `;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 4000);
+}
+
+function openAchievements() {
+  const listEl = document.getElementById('ach-list');
+  document.getElementById('ach-title').textContent    = t.achTitle;
+  document.getElementById('ach-close-btn').textContent = t.achClose;
+
+  listEl.innerHTML = ACHIEVEMENTS.map(ach => {
+    const done = unlockedAch.has(ach.id);
+    return `
+      <div class="ach-row ${done ? 'done' : ''}">
+        <div class="ach-row-icon">${ach.icon}</div>
+        <div class="ach-row-info">
+          <div class="ach-row-name">${ach.names[currentLang] || ach.names.ru}</div>
+          <div class="ach-row-desc">${ach.descs[currentLang] || ach.descs.ru}</div>
+          <div class="ach-row-reward">${t.achReward} +${fmt(ach.reward)}</div>
+        </div>
+        <div class="ach-row-check">${done ? '✅' : '🔒'}</div>
+      </div>
+    `;
+  }).join('');
+
+  document.getElementById('ach-overlay').classList.add('open');
+}
+
+function closeAchievements() {
+  document.getElementById('ach-overlay').classList.remove('open');
+}
+
+// ── Темы ──────────────────────────────────────────────────
+let currentTheme = localStorage.getItem('theme') || 'dark';
+
+const THEMES = {
+  dark:   { accent:'#e94560', accentH:'#ff6b81', bg:'#0d0d1a', headerBg:'#1a1a2e', cardBg:'#16213e', btnBg:'#0f3460' },
+  blue:   { accent:'#00b4d8', accentH:'#48cae4', bg:'#050f1a', headerBg:'#071828', cardBg:'#0a1e34', btnBg:'#0a2040' },
+  gold:   { accent:'#ffc300', accentH:'#ffd60a', bg:'#0d0900', headerBg:'#1a1200', cardBg:'#161000', btnBg:'#2a1e00' },
+  purple: { accent:'#bb86fc', accentH:'#d0a8ff', bg:'#0a0514', headerBg:'#110a22', cardBg:'#160b2a', btnBg:'#1e0f3a' },
+};
+
+function applyTheme(theme) {
+  currentTheme = theme;
+  localStorage.setItem('theme', theme);
+  const c = THEMES[theme] || THEMES.dark;
+  let el = document.getElementById('theme-style');
+  if (!el) { el = document.createElement('style'); el.id = 'theme-style'; document.head.appendChild(el); }
+  el.textContent = `
+    body{background:${c.bg}!important}
+    #header{background:${c.headerBg}!important;border-bottom-color:${c.accent}!important}
+    .biz-card{background:${c.cardBg}!important}
+    #lb-panel,#settings-panel,#ach-panel,#profile-panel,#prestige-panel,
+    #admin-panel,#history-panel,#mail-panel,#online-panel,#daily-panel
+      {background:${c.cardBg}!important}
+    #lb-panel{border-color:${c.accent}!important}
+    #profile-panel{border-color:${c.accent}!important}
+    #ach-panel h2,#lb-panel h2{color:${c.accent}!important}
+    #header h1{color:${c.accent}!important}
+    #lb-btn,.btn-collect:not(.managed):not(.idle){background:${c.accent}!important}
+    #lb-submit-btn{background:${c.accent}!important}
+    .biz-card.ready-glow{border-color:${c.accent}!important;box-shadow:0 0 16px ${c.accent}44!important}
+    .profile-avatar,.profile-avatar-initials{border-color:${c.accent}!important}
+    #profile-btn{border-color:${c.accent}!important}
+    .ms-badge.done{color:${c.accent}!important;border-color:${c.accent}!important}
+    .lb-row.lb-me{border-color:${c.accent}!important}
+    .ach-row.done{border-color:${c.accent}!important}
+    #daily-panel{border-color:#ffd700!important}
+    #history-panel{border-color:#4caf50!important}
+  `;
+  document.querySelectorAll('.theme-btn').forEach(b => b.classList.toggle('active', b.dataset.theme === theme));
+}
+
+// ── Онлайн список ─────────────────────────────────────────
+async function openOnlineList() {
+  document.getElementById('online-title').textContent    = t.onlineTitle;
+  document.getElementById('online-close-btn').textContent = t.onlineClose;
+  document.getElementById('online-overlay').classList.add('open');
+  const listEl = document.getElementById('online-list');
+  listEl.innerHTML = '<div class="mail-empty">Загрузка...</div>';
+  try {
+    const res   = await fetch(`${DB_URL}/saves.json`);
+    const saves = await res.json() || {};
+    const now   = Date.now();
+    const online = Object.entries(saves)
+      .filter(([_, s]) => s.lastSeen && now - s.lastSeen < 5 * 60 * 1000)
+      .map(([id, s]) => ({ id, name: s.name || 'Игрок', lastSeen: s.lastSeen }))
+      .sort((a, b) => b.lastSeen - a.lastSeen);
+
+    document.getElementById('online-btn').textContent = '🟢 ' + online.length;
+
+    if (!online.length) { listEl.innerHTML = `<div class="mail-empty">${t.onlineEmpty}</div>`; return; }
+    listEl.innerHTML = online.map(p => `
+      <div class="online-row">
+        <div class="online-dot"></div>
+        <div class="online-name">${p.name}${p.id === playerId ? ' (ты)' : ''}</div>
+        <div class="online-time">${timeAgo(p.lastSeen)}</div>
+      </div>
+    `).join('');
+  } catch(e) { listEl.innerHTML = '<div class="mail-empty">❌ Ошибка</div>'; }
+}
+
+function closeOnlineList() { document.getElementById('online-overlay').classList.remove('open'); }
+
+async function refreshOnlineCount() {
+  if (!playerId) return;
+  try {
+    const res   = await fetch(`${DB_URL}/saves.json`);
+    const saves = await res.json() || {};
+    const count = Object.values(saves).filter(s => s.lastSeen && Date.now() - s.lastSeen < 5 * 60 * 1000).length;
+    document.getElementById('online-btn').textContent = '🟢 ' + count;
+  } catch(e) {}
+}
+setInterval(refreshOnlineCount, 60000);
+
+// ── Ежедневная награда ────────────────────────────────────
+const DAILY_REWARDS = [1000, 5000, 10000, 50000, 100000, 500000, 1000000];
+
+function checkDailyReward() {
+  const last   = parseInt(localStorage.getItem('daily_last') || '0');
+  const streak = parseInt(localStorage.getItem('daily_streak') || '0');
+  if (Date.now() - last < 24 * 60 * 60 * 1000) return;
+  showDailyModal(streak);
+}
+
+function showDailyModal(streak) {
+  const idx    = streak % DAILY_REWARDS.length;
+  const reward = DAILY_REWARDS[idx];
+
+  document.getElementById('daily-title').textContent        = t.dailyTitle;
+  document.getElementById('daily-claim-btn').textContent    = t.dailyClaim;
+  document.getElementById('daily-reward-amount').textContent = fmt(reward);
+  document.getElementById('daily-streak-text').textContent  = t.dailyStreakText + ' ' + (streak + 1);
+
+  // полоска дней
+  document.getElementById('daily-streak').innerHTML = DAILY_REWARDS.map((r, i) => {
+    const cls = i < idx ? 'claimed' : i === idx ? 'today' : '';
+    return `<div class="daily-day ${cls}"><span>${i+1}</span><span style="font-size:0.6rem">${fmtShort(r)}</span></div>`;
+  }).join('');
+
+  document.getElementById('daily-claim-btn').onclick = () => {
+    money += reward;
+    const last = parseInt(localStorage.getItem('daily_last') || '0');
+    const newStreak = Date.now() - last < 48 * 60 * 60 * 1000 ? streak + 1 : 1;
+    localStorage.setItem('daily_last', Date.now());
+    localStorage.setItem('daily_streak', newStreak % DAILY_REWARDS.length);
+    updateHeader();
+    document.getElementById('daily-overlay').classList.remove('open');
+    spawnFloat(window.innerWidth / 2, window.innerHeight / 2, '+' + fmt(reward) + ' 🎁');
+  };
+
+  document.getElementById('daily-overlay').classList.add('open');
+}
+
+function fmtShort(n) {
+  if (n >= 1e6) return (n/1e6).toFixed(0) + 'M';
+  if (n >= 1e3) return (n/1e3).toFixed(0) + 'K';
+  return '$' + n;
+}
+
+// ── Авто-события ──────────────────────────────────────────
+const AUTO_EVENTS_LIST = [
+  { id:'bonus',  icon:'📺', type:'mult', mult:2,   dur:120, good:true,
+    names:{ru:'Реклама!',          en:'Advertisement!',  uz:'Reklama!'},
+    descs:{ru:'+100% доход 2 мин', en:'+100% income 2m', uz:'+100% daromad 2d'} },
+  { id:'rush',   icon:'⚡', type:'mult', mult:3,   dur:60,  good:true,
+    names:{ru:'Час пик!',          en:'Rush hour!',       uz:'Shoshilinch soat!'},
+    descs:{ru:'+200% доход 1 мин', en:'+200% income 1m',  uz:'+200% daromad 1d'} },
+  { id:'tax',    icon:'📋', type:'mult', mult:0.5, dur:120, good:false,
+    names:{ru:'Налоговая проверка',en:'Tax audit',        uz:'Soliq tekshiruvi'},
+    descs:{ru:'-50% доход 2 мин',  en:'-50% income 2m',   uz:'-50% daromad 2d'} },
+  { id:'gift',   icon:'🎁', type:'money', good:true,
+    names:{ru:'Подарок!',          en:'Gift!',             uz:'Sovg\'a!'},
+    descs:{ru:'Бесплатные деньги!',en:'Free money!',       uz:'Bepul pul!'} },
+  { id:'fire',   icon:'🔥', type:'loss', good:false,
+    names:{ru:'Пожар!',            en:'Fire!',             uz:'Yong\'in!'},
+    descs:{ru:'-10% ваших денег',  en:'-10% of your money',uz:'Pulingizning -10%'} },
+];
+
+let localEvent = null;
+
+function triggerAutoEvent() {
+  if (isAdmin()) return;
+  const ev = AUTO_EVENTS_LIST[Math.floor(Math.random() * AUTO_EVENTS_LIST.length)];
+
+  if (ev.type === 'mult') {
+    localEvent = { mult: ev.mult, endsAt: Date.now() + ev.dur * 1000 };
+  } else if (ev.type === 'money') {
+    const bonus = Math.max(1000, totalEarned * 0.05);
+    money += bonus;
+    updateHeader();
+  } else if (ev.type === 'loss') {
+    if (isFinite(money)) { money = Math.max(0, money * 0.9); updateHeader(); }
+  }
+
+  // тост
+  const el = document.createElement('div');
+  el.className = 'auto-event-toast ' + (ev.good ? 'good' : 'bad');
+  el.innerHTML = `
+    <span style="font-size:1.8rem">${ev.icon}</span>
+    <div>
+      <div style="font-weight:bold">${ev.names[currentLang]||ev.names.ru}</div>
+      <div style="font-size:0.8rem;color:#aaa">${ev.descs[currentLang]||ev.descs.ru}</div>
+    </div>
+  `;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 5000);
+}
+
+function localEventMultiplier() {
+  if (!localEvent) return 1;
+  if (Date.now() > localEvent.endsAt) { localEvent = null; return 1; }
+  return localEvent.mult;
+}
+
+function scheduleAutoEvent() {
+  const delay = (5 + Math.random() * 5) * 60 * 1000;
+  setTimeout(() => { triggerAutoEvent(); scheduleAutoEvent(); }, delay);
+}
+
+// ── Активное событие ──────────────────────────────────────
+let activeEvent = null;
+
+async function checkActiveEvent() {
+  try {
+    const res = await fetch(`${DB_URL}/events/active.json`);
+    const ev  = await res.json();
+    if (ev && ev.startedAt + ev.duration * 1000 > Date.now()) {
+      activeEvent = ev;
+      showEventBanner();
+      if (ev.type === 'free_money' && !localStorage.getItem('claimed_' + ev.startedAt)) {
+        money += 1e6;
+        localStorage.setItem('claimed_' + ev.startedAt, '1');
+        updateHeader();
+        spawnFloat(window.innerWidth / 2, window.innerHeight / 2, '+$1M 🎁');
+      }
+    } else {
+      activeEvent = null;
+      removeEventBanner();
+    }
+  } catch(e) {}
+}
+
+function showEventBanner() {
+  if (!activeEvent) return;
+  removeEventBanner();
+  const el = document.createElement('div');
+  el.className = 'event-banner';
+  el.id = 'event-banner';
+  const remaining = Math.ceil((activeEvent.startedAt + activeEvent.duration * 1000 - Date.now()) / 60000);
+  const labels = { double_income: '💰 Двойной доход!', triple_income: '⚡ Тройной доход!', free_money: '🎁 Всем $1M!' };
+  el.textContent = (labels[activeEvent.type] || '🎉 Событие!') + ' ещё ' + remaining + ' мин';
+  document.body.appendChild(el);
+}
+
+function removeEventBanner() {
+  document.getElementById('event-banner')?.remove();
+}
+
+function eventMultiplier() {
+  if (!activeEvent) return 1;
+  if (activeEvent.startedAt + activeEvent.duration * 1000 < Date.now()) { activeEvent = null; return 1; }
+  if (activeEvent.type === 'double_income') return 2;
+  if (activeEvent.type === 'triple_income') return 3;
+  return 1;
+}
+
+setInterval(checkActiveEvent, 30000);
+
+// ── Скрытый профиль ───────────────────────────────────────
+let privateProfile = false;
+
+// ── Админ панель ──────────────────────────────────────────
+async function openAdminPanel() {
+  document.getElementById('admin-overlay').classList.add('open');
+  document.getElementById('admin-hide-profile').checked = privateProfile;
+  await loadAdminStats();
+  await loadAdminPlayers();
+}
+
+function closeAdminPanel() {
+  document.getElementById('admin-overlay').classList.remove('open');
+}
+
+async function loadAdminStats() {
+  try {
+    const [lbRes, savesRes] = await Promise.all([
+      fetch(`${DB_URL}/leaderboard.json`),
+      fetch(`${DB_URL}/saves.json`),
+    ]);
+    const lb    = await lbRes.json()   || {};
+    const saves = await savesRes.json() || {};
+
+    const players    = Object.values(lb);
+    const totalScore = players.reduce((s, p) => s + (p.score || 0), 0);
+    const online     = Object.values(saves).filter(s => s.lastSeen && Date.now() - s.lastSeen < 5 * 60 * 1000).length;
+
+    document.getElementById('admin-stats').innerHTML = `
+      <div class="admin-stat-box"><div class="admin-stat-val">${players.length}</div><div class="admin-stat-lbl">Всего игроков</div></div>
+      <div class="admin-stat-box"><div class="admin-stat-val">${online}</div><div class="admin-stat-lbl">Онлайн сейчас</div></div>
+      <div class="admin-stat-box" style="grid-column:1/-1"><div class="admin-stat-val">${fmt(totalScore)}</div><div class="admin-stat-lbl">Суммарный рекорд</div></div>
+    `;
+  } catch(e) {}
+}
+
+async function loadAdminPlayers() {
+  const listEl = document.getElementById('admin-players-list');
+  try {
+    const res  = await fetch(`${DB_URL}/leaderboard.json`);
+    const data = await res.json();
+    if (!data) { listEl.textContent = 'Нет игроков'; return; }
+
+    const players = Object.entries(data).map(([id, v]) => ({ id, ...v }));
+    players.sort((a, b) => b.score - a.score);
+
+    listEl.innerHTML = players.map(p => {
+      const isMe = p.id === playerId;
+      return `
+        <div class="admin-player-row">
+          <span class="admin-player-name">${p.name || 'Игрок'}${isMe ? ' (я)' : ''}</span>
+          <span class="admin-player-score">${fmt(p.score || 0)}</span>
+          ${!isMe ? `<button class="btn-admin-delete" onclick="adminDeletePlayer('${p.id}','${(p.name||'').replace(/'/g,'')}')">🗑️</button>` : ''}
+        </div>
+      `;
+    }).join('');
+  } catch(e) { listEl.textContent = 'Ошибка загрузки'; }
+}
+
+async function adminDeletePlayer(uid, name) {
+  if (!confirm('Удалить ' + name + ' из лидерборда?')) return;
+  await fetch(`${DB_URL}/leaderboard/${uid}.json`, { method: 'DELETE' });
+  await loadAdminPlayers();
+}
+
+async function adminSendEvent() {
+  const type = document.getElementById('admin-event-type').value;
+  const durations = { double_income: 600, triple_income: 300, free_money: 1 };
+  await fetch(`${DB_URL}/events/active.json`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ type, duration: durations[type], startedAt: Date.now() }),
+  });
+  await checkActiveEvent();
+  alert('Событие отправлено!');
+}
+
+async function adminStopEvent() {
+  await fetch(`${DB_URL}/events/active.json`, { method: 'DELETE' });
+  activeEvent = null;
+  removeEventBanner();
+}
+
+// ── Почта ─────────────────────────────────────────────────
+let currentMailTab = 'global';
+let mailPlayers    = [];   // список игроков для compose
+let writeToId      = null; // для кнопки "написать" из профиля
+let writeToName    = null;
+
+function genMsgId() {
+  return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+}
+
+function timeAgo(ts) {
+  const diff = Date.now() - ts;
+  const m = Math.floor(diff / 60000);
+  const h = Math.floor(diff / 3600000);
+  const d = Math.floor(diff / 86400000);
+  if (d > 0) return d + 'д назад';
+  if (h > 0) return h + 'ч назад';
+  if (m > 0) return m + 'м назад';
+  return 'только что';
+}
+
+async function openMail(toId, toName) {
+  // применить переводы
+  document.getElementById('mail-title').textContent       = t.mailTitle;
+  document.getElementById('mail-close-btn').textContent  = t.mailClose;
+  document.getElementById('tab-global-lbl').textContent  = t.mailGlobal;
+  document.getElementById('tab-personal-lbl').textContent = t.mailPersonal;
+  document.getElementById('mail-text').placeholder       = t.mailPlaceholder;
+  document.getElementById('mail-send-btn').textContent   = t.mailSend;
+
+  document.getElementById('mail-overlay').classList.add('open');
+
+  // загрузить игроков для compose
+  await loadMailPlayers();
+
+  if (toId && toName) {
+    switchMailTab('personal');
+    writeToId   = toId;
+    writeToName = toName;
+    updateComposeSelect();
+  } else {
+    switchMailTab('global');
+  }
+}
+
+function closeMail() {
+  document.getElementById('mail-overlay').classList.remove('open');
+  writeToId = null; writeToName = null;
+}
+
+async function loadMailPlayers() {
+  try {
+    const res  = await fetch(`${DB_URL}/leaderboard.json`);
+    const data = await res.json();
+    if (!data) { mailPlayers = []; return; }
+    mailPlayers = Object.entries(data)
+      .map(([id, v]) => ({ id, name: v.name || 'Игрок' }))
+      .filter(p => p.id !== playerId);
+  } catch(e) { mailPlayers = []; }
+}
+
+function updateComposeSelect() {
+  const sel = document.getElementById('mail-to-select');
+  sel.innerHTML = mailPlayers.map(p =>
+    `<option value="${p.id}" ${p.id === writeToId ? 'selected' : ''}>${p.name}</option>`
+  ).join('');
+  sel.style.display = currentMailTab === 'personal' && mailPlayers.length ? 'block' : 'none';
+}
+
+async function switchMailTab(tab) {
+  currentMailTab = tab;
+  document.getElementById('tab-global').classList.toggle('active', tab === 'global');
+  document.getElementById('tab-personal').classList.toggle('active', tab === 'personal');
+  updateComposeSelect();
+
+  // показываем форму только: в личных — всем, в глобальных — только админу
+  const footer = document.getElementById('mail-footer');
+  footer.style.display = (tab === 'personal' || isAdmin()) ? 'block' : 'none';
+
+  if (tab === 'global') {
+    await loadGlobalMessages();
+    localStorage.setItem('mail_global_read', Date.now());
+    document.getElementById('global-tab-badge').style.display = 'none';
+  } else {
+    await loadInbox();
+  }
+  updateMailBadge();
+}
+
+async function loadGlobalMessages() {
+  const el = document.getElementById('mail-content');
+  el.innerHTML = '<div class="mail-empty">Загрузка...</div>';
+  try {
+    const res  = await fetch(`${DB_URL}/global_messages.json`);
+    const data = await res.json();
+    if (!data) { el.innerHTML = `<div class="mail-empty">${t.mailEmpty}</div>`; return; }
+
+    const msgs = Object.entries(data).map(([id, v]) => ({ id, ...v }));
+    msgs.sort((a, b) => b.ts - a.ts);
+    const lastRead = parseInt(localStorage.getItem('mail_global_read') || '0');
+
+    el.innerHTML = msgs.map(m => `
+      <div class="mail-msg ${m.ts > lastRead ? 'unread' : ''}">
+        <div class="mail-msg-from">👑 <span>${m.fromName}</span></div>
+        <div class="mail-msg-text">${m.text}</div>
+        <div class="mail-msg-time">${timeAgo(m.ts)}</div>
+      </div>
+    `).join('') || `<div class="mail-empty">${t.mailEmpty}</div>`;
+  } catch(e) {
+    el.innerHTML = `<div class="mail-empty">❌ Ошибка загрузки</div>`;
+  }
+}
+
+let currentChatTarget = null; // { id, name }
+
+async function loadInbox() {
+  currentChatTarget = null;
+  const el     = document.getElementById('mail-content');
+  const footer = document.getElementById('mail-footer');
+  footer.style.display = 'none';
+  el.innerHTML = '<div class="mail-empty">Загрузка...</div>';
+
+  try {
+    // получаем входящие сообщения
+    const res  = await fetch(`${DB_URL}/inbox/${playerId}.json`);
+    const data = await res.json() || {};
+
+    // группируем непрочитанные по отправителю
+    const unreadByPlayer = {};
+    Object.values(data).forEach(m => {
+      if (!m.read) {
+        unreadByPlayer[m.fromId] = (unreadByPlayer[m.fromId] || 0) + 1;
+      }
+    });
+
+    if (!mailPlayers.length) await loadMailPlayers();
+
+    if (!mailPlayers.length) {
+      el.innerHTML = `<div class="mail-empty">Нет других игроков</div>`;
+      return;
+    }
+
+    el.innerHTML = mailPlayers.map(p => {
+      const unread = unreadByPlayer[p.id] || 0;
+      return `
+        <div class="mail-player-row" onclick="openChat('${p.id}','${p.name.replace(/'/g,'')}')">
+          <div class="mail-player-avatar">${p.name[0].toUpperCase()}</div>
+          <div class="mail-player-name">${p.name}</div>
+          ${unread ? `<div class="mail-player-unread">${unread}</div>` : ''}
+        </div>
+      `;
+    }).join('');
+  } catch(e) {
+    el.innerHTML = `<div class="mail-empty">❌ Ошибка</div>`;
+  }
+}
+
+async function openChat(targetId, targetName) {
+  currentChatTarget = { id: targetId, name: targetName };
+  const el     = document.getElementById('mail-content');
+  const footer = document.getElementById('mail-footer');
+  footer.style.display = 'block';
+
+  // выбираем игрока в select (скрыт — используем внутри)
+  document.getElementById('mail-to-select').style.display = 'none';
+  document.getElementById('mail-text').placeholder = t.mailPlaceholder;
+
+  el.innerHTML = `
+    <button class="btn-back-players" onclick="loadInbox()">← Назад</button>
+    <div id="mail-convo"></div>
+  `;
+
+  // загружаем сообщения обеих сторон
+  try {
+    const [inRes, outRes] = await Promise.all([
+      fetch(`${DB_URL}/inbox/${playerId}.json`),
+      fetch(`${DB_URL}/inbox/${targetId}.json`),
+    ]);
+    const inData  = await inRes.json()  || {};
+    const outData = await outRes.json() || {};
+
+    const msgs = [];
+
+    // полученные от target
+    Object.entries(inData).forEach(([id, m]) => {
+      if (m.fromId === targetId) msgs.push({ id, ...m, side: 'received' });
+    });
+
+    // отправленные target-у (в его inbox от нас)
+    Object.entries(outData).forEach(([id, m]) => {
+      if (m.fromId === playerId) msgs.push({ id, ...m, side: 'sent' });
+    });
+
+    msgs.sort((a, b) => a.ts - b.ts);
+
+    // отмечаем прочитанными
+    Object.entries(inData).forEach(([id, m]) => {
+      if (m.fromId === targetId && !m.read) markRead(id);
+    });
+
+    const convo = document.getElementById('mail-convo');
+    if (!msgs.length) {
+      convo.innerHTML = `<div class="mail-empty">Нет сообщений. Начни переписку!</div>`;
+    } else {
+      convo.innerHTML = msgs.map(m => `
+        <div class="msg-bubble ${m.side}">
+          ${m.text}
+          <div class="msg-bubble-time">${timeAgo(m.ts)}</div>
+        </div>
+      `).join('');
+      convo.scrollTop = convo.scrollHeight;
+    }
+  } catch(e) {}
+}
+
+async function markRead(msgId) {
+  try {
+    await fetch(`${DB_URL}/inbox/${playerId}/${msgId}.json`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ read: true }),
+    });
+    await loadInbox();
+    updateMailBadge();
+  } catch(e) {}
+}
+
+async function sendMailMessage() {
+  const text = document.getElementById('mail-text').value.trim();
+  if (!text) return;
+
+  const btn = document.getElementById('mail-send-btn');
+  btn.disabled = true;
+
+  try {
+    if (currentMailTab === 'global' && isAdmin()) {
+      await fetch(`${DB_URL}/global_messages/${genMsgId()}.json`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fromName: playerName, text, ts: Date.now() }),
+      });
+      document.getElementById('mail-text').value = '';
+      await loadGlobalMessages();
+    } else if (currentMailTab === 'personal') {
+      if (!currentChatTarget) return;
+      await fetch(`${DB_URL}/inbox/${currentChatTarget.id}/${genMsgId()}.json`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fromId: playerId, fromName: playerName, text, ts: Date.now(), read: false }),
+      });
+      document.getElementById('mail-text').value = '';
+      await openChat(currentChatTarget.id, currentChatTarget.name);
+    }
+  } catch(e) { alert('Ошибка: ' + e.message); }
+  finally { btn.disabled = false; }
+}
+
+async function updateMailBadge() {
+  let count = 0;
+
+  // личные непрочитанные
+  try {
+    const res  = await fetch(`${DB_URL}/inbox/${playerId}.json`);
+    const data = await res.json();
+    if (data) {
+      const unread = Object.values(data).filter(m => !m.read).length;
+      count += unread;
+      const pb = document.getElementById('personal-tab-badge');
+      if (unread > 0) { pb.textContent = unread; pb.style.display = 'inline-block'; }
+      else pb.style.display = 'none';
+    }
+  } catch(e) {}
+
+  // глобальные непрочитанные
+  try {
+    const res  = await fetch(`${DB_URL}/global_messages.json`);
+    const data = await res.json();
+    const lastRead = parseInt(localStorage.getItem('mail_global_read') || '0');
+    if (data) {
+      const newGlobal = Object.values(data).filter(m => m.ts > lastRead).length;
+      count += newGlobal;
+      const gb = document.getElementById('global-tab-badge');
+      if (newGlobal > 0) { gb.textContent = newGlobal; gb.style.display = 'inline-block'; }
+      else gb.style.display = 'none';
+    }
+  } catch(e) {}
+
+  const badge = document.getElementById('mail-badge');
+  if (count > 0) {
+    badge.textContent = count > 9 ? '9+' : count;
+    badge.classList.add('show');
+  } else {
+    badge.classList.remove('show');
+  }
+}
+
+// проверять новые сообщения каждые 30 сек
+setInterval(() => { if (playerId) updateMailBadge(); }, 30000);
+
+// ── История заработка ─────────────────────────────────────
+let earningsHistory = [];   // [{earned, time}] — последние 30 минут
+let earnedThisMinute = 0;
+
+setInterval(() => {
+  if (!playerId) return;
+  earningsHistory.push({ earned: earnedThisMinute, time: Date.now() });
+  if (earningsHistory.length > 30) earningsHistory.shift();
+  earnedThisMinute = 0;
+}, 60000);
+
+function openHistory() {
+  document.getElementById('history-title').textContent      = t.historyTitle;
+  document.getElementById('history-close-btn').textContent  = t.historyClose;
+  document.getElementById('hist-best-lbl').textContent      = t.histBest;
+  document.getElementById('hist-avg-lbl').textContent       = t.histAvg;
+  document.getElementById('hist-total-lbl').textContent     = t.histTotal;
+
+  const best = earningsHistory.length ? Math.max(...earningsHistory.map(e => e.earned)) : 0;
+  const avg  = earningsHistory.length ? earningsHistory.reduce((s, e) => s + e.earned, 0) / earningsHistory.length : 0;
+  document.getElementById('hist-best').textContent  = fmt(best);
+  document.getElementById('hist-avg').textContent   = fmt(avg);
+  document.getElementById('hist-total').textContent = fmt(totalEarned);
+
+  document.getElementById('history-overlay').classList.add('open');
+  drawHistoryChart();
+}
+
+function closeHistory() {
+  document.getElementById('history-overlay').classList.remove('open');
+}
+
+function drawHistoryChart() {
+  const canvas = document.getElementById('history-canvas');
+  const ctx    = canvas.getContext('2d');
+  const W = canvas.offsetWidth || 450;
+  const H = 180;
+  canvas.width  = W;
+  canvas.height = H;
+
+  ctx.clearRect(0, 0, W, H);
+
+  if (earningsHistory.length < 2) {
+    ctx.fillStyle = '#555';
+    ctx.font = '14px Segoe UI';
+    ctx.textAlign = 'center';
+    ctx.fillText(t.histNoData, W / 2, H / 2);
+    return;
+  }
+
+  const pad    = { top: 16, right: 16, bottom: 28, left: 56 };
+  const chartW = W - pad.left - pad.right;
+  const chartH = H - pad.top  - pad.bottom;
+
+  const values = earningsHistory.map(e => e.earned);
+  const maxVal = Math.max(...values) || 1;
+
+  // сетка
+  ctx.strokeStyle = '#1a3a6a';
+  ctx.lineWidth = 1;
+  for (let i = 0; i <= 4; i++) {
+    const y = pad.top + chartH - (i / 4) * chartH;
+    ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(pad.left + chartW, y); ctx.stroke();
+    ctx.fillStyle = '#556';
+    ctx.font = '10px Segoe UI';
+    ctx.textAlign = 'right';
+    ctx.fillText(fmt(maxVal * i / 4), pad.left - 4, y + 4);
+  }
+
+  // линия
+  ctx.strokeStyle = '#4caf50';
+  ctx.lineWidth = 2.5;
+  ctx.shadowColor = '#4caf5066';
+  ctx.shadowBlur = 8;
+  ctx.beginPath();
+  values.forEach((v, i) => {
+    const x = pad.left + (i / (values.length - 1)) * chartW;
+    const y = pad.top  + chartH - (v / maxVal) * chartH;
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  });
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+
+  // заливка под линией
+  ctx.fillStyle = 'rgba(76,175,80,0.1)';
+  ctx.beginPath();
+  values.forEach((v, i) => {
+    const x = pad.left + (i / (values.length - 1)) * chartW;
+    const y = pad.top  + chartH - (v / maxVal) * chartH;
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  });
+  ctx.lineTo(pad.left + chartW, pad.top + chartH);
+  ctx.lineTo(pad.left, pad.top + chartH);
+  ctx.closePath(); ctx.fill();
+
+  // точки
+  ctx.fillStyle = '#4caf50';
+  values.forEach((v, i) => {
+    const x = pad.left + (i / (values.length - 1)) * chartW;
+    const y = pad.top  + chartH - (v / maxVal) * chartH;
+    ctx.beginPath(); ctx.arc(x, y, 3, 0, Math.PI * 2); ctx.fill();
+  });
+
+  // ось X — метки минут
+  ctx.fillStyle = '#556';
+  ctx.font = '9px Segoe UI';
+  ctx.textAlign = 'center';
+  const step = Math.max(1, Math.floor(values.length / 6));
+  values.forEach((_, i) => {
+    if (i % step !== 0 && i !== values.length - 1) return;
+    const x   = pad.left + (i / (values.length - 1)) * chartW;
+    const min = values.length - 1 - i;
+    ctx.fillText(min === 0 ? 'now' : '-' + min + 'm', x, H - 6);
+  });
+}
+
+// ── Престиж ───────────────────────────────────────────────
+const ADMIN_EMAIL = 'kambarkamol@gmail.com';
+let isAdminUser = false;
+function isAdmin() { return isAdminUser; }
+
+const PRESTIGE_THRESHOLD = 1e9;
+
+function updatePrestigeBtn() {
+  const btn = document.getElementById('prestige-btn');
+  btn.textContent = t.prestigeBtn;
+  if (totalEarned >= PRESTIGE_THRESHOLD) {
+    btn.classList.add('visible');
+  }
+}
+
+function openPrestige() {
+  const nextMult = 1 + (prestigeCount + 1) * 0.5;
+  document.getElementById('prestige-title').textContent      = t.prestigeTitle;
+  document.getElementById('prestige-lbl-level').textContent  = t.prestigeLevel;
+  document.getElementById('prestige-lbl-mult').textContent   = t.prestigeMult;
+  document.getElementById('prestige-lbl-next').textContent   = t.prestigeNext;
+  document.getElementById('prestige-warn').textContent       = '⚠️ ' + t.prestigeWarn;
+  document.getElementById('prestige-do-btn').textContent     = t.prestigeDo;
+  document.getElementById('prestige-cancel-btn').textContent = t.prestigeClose;
+  document.getElementById('prestige-level-val').textContent  = prestigeCount;
+  document.getElementById('prestige-mult-val').textContent   = 'x' + prestigeMultiplier().toFixed(1);
+  document.getElementById('prestige-next-val').textContent   = 'x' + nextMult.toFixed(1);
+  document.getElementById('prestige-overlay').classList.add('open');
+}
+
+function closePrestige() {
+  document.getElementById('prestige-overlay').classList.remove('open');
+}
+
+function doPrestige() {
+  prestigeCount++;
+  money         = isAdmin() ? Infinity : 10;
+  totalEarned   = isAdmin() ? Infinity : 0;
+  allTimeRecord = isAdmin() ? Infinity : allTimeRecord;
+  // allTimeRecord не сбрасывается
+  state.forEach(s => {
+    s.count = 0; s.upgrades = 0; s.hasManager = false;
+    s.progress = 0; s.ready = false;
+  });
+  closePrestige();
+  document.getElementById('prestige-btn').classList.remove('visible');
+  save(); saveToCloud();
+  buildUI();
+  updateHeader();
+  showAchToast({
+    icon: '⭐',
+    names: { ru: 'Престиж ' + prestigeCount, en: 'Prestige ' + prestigeCount, uz: 'Prestij ' + prestigeCount },
+    descs: { ru: 'Множитель дохода x' + prestigeMultiplier().toFixed(1),
+             en: 'Income multiplier x' + prestigeMultiplier().toFixed(1),
+             uz: "Daromad ko'paytiruvchisi x" + prestigeMultiplier().toFixed(1) },
+    reward: 0,
+  });
+}
+
 applyLang(currentLang);
+applyTheme(currentTheme);
 
 auth.onAuthStateChanged(user => {
   if (user) {
-    playerId   = user.uid;
-    playerName = user.displayName || user.email || 'Игрок';
+    playerId     = user.uid;
+    playerName   = user.displayName || user.email || 'Игрок';
+    playerPhoto  = user.photoURL || null;
+    isAdminUser  = (user.email === ADMIN_EMAIL);
     document.getElementById('signin-overlay').style.display = 'none';
+    // кнопка профиля
+    const pbtn = document.getElementById('profile-btn');
+    if (playerPhoto) {
+      pbtn.innerHTML = `<img src="${playerPhoto}" alt="avatar">`;
+    } else {
+      pbtn.innerHTML = `<div id="profile-btn-initials">${playerName[0].toUpperCase()}</div>`;
+    }
+    if (isAdmin()) {
+      document.getElementById('admin-btn').classList.add('visible');
+      money         = Infinity;
+      totalEarned   = Infinity;
+      allTimeRecord = Infinity;
+      document.getElementById('prestige-btn').classList.add('visible');
+    }
     if (!gameStarted) {
       gameStarted = true;
       loadFromCloud().then(fromCloud => {
@@ -634,6 +2395,11 @@ auth.onAuthStateChanged(user => {
         buildUI();
         updateHeader();
         requestAnimationFrame(gameLoop);
+        checkActiveEvent();
+        updateMailBadge();
+        refreshOnlineCount();
+        setTimeout(checkDailyReward, 1500);
+        scheduleAutoEvent();
       });
     }
   } else {
@@ -665,8 +2431,12 @@ const MILESTONES     = [10, 25, 50, 100, 200];
 const MILESTONE_MULT = [2,  4,  8,  16,  32 ];
 
 // ── Состояние ─────────────────────────────────────────────
-let money        = 10;
-let totalEarned  = 0;   // для лидерборда
+let money         = 10;
+let totalEarned   = 0;
+let allTimeRecord = 0;   // не сбрасывается после престижа
+let prestigeCount = 0;
+
+function prestigeMultiplier() { return 1 + prestigeCount * 0.5; }
 
 const state = DEFS.map(() => ({
   count: 0, upgrades: 0, hasManager: false, progress: 0, ready: false,
@@ -682,7 +2452,7 @@ function msMult(i) {
 function incomePerCycle(i) {
   const s = state[i];
   if (s.count === 0) return 0;
-  return DEFS[i].baseIncome * s.count * Math.pow(2, s.upgrades) * msMult(i);
+  return DEFS[i].baseIncome * s.count * Math.pow(2, s.upgrades) * msMult(i) * prestigeMultiplier() * eventMultiplier() * localEventMultiplier();
 }
 function cycleTime(i) { return DEFS[i].baseTime; }
 function totalPerSecond() {
@@ -691,7 +2461,33 @@ function totalPerSecond() {
     return sum + incomePerCycle(i) / cycleTime(i);
   }, 0);
 }
-function buyCost(i)     { return Math.floor(DEFS[i].baseCost * Math.pow(1.07, state[i].count)); }
+let buyMode = 1; // 1, 10, 100, или 'max'
+
+function buyCost(i) { return Math.floor(DEFS[i].baseCost * Math.pow(1.07, state[i].count)); }
+
+function bulkAmount(i) {
+  const remaining = 1000 - state[i].count;
+  if (remaining <= 0) return 0;
+  if (buyMode === 'max') {
+    // сколько можем купить за имеющиеся деньги (до 1000)
+    let total = 0, count = state[i].count, spent = 0;
+    while (count < 1000) {
+      const c = Math.floor(DEFS[i].baseCost * Math.pow(1.07, count));
+      if (!isFinite(money) || spent + c <= money) { spent += c; count++; total++; }
+      else break;
+    }
+    return total;
+  }
+  return Math.min(buyMode, remaining);
+}
+
+function bulkCost(i, amount) {
+  let total = 0, count = state[i].count;
+  for (let j = 0; j < amount; j++) {
+    total += Math.floor(DEFS[i].baseCost * Math.pow(1.07, count + j));
+  }
+  return total;
+}
 function upgradeCost(i) { return Math.floor(DEFS[i].baseCost * state[i].count * 10 * Math.pow(3, state[i].upgrades)); }
 
 // ── Игровой цикл ──────────────────────────────────────────
@@ -748,12 +2544,16 @@ function gameLoop(ts) {
 // ── Сбор дохода ───────────────────────────────────────────
 function collect(i, event) {
   const earned = incomePerCycle(i);
-  money       += earned;
-  totalEarned += earned;
+  money         += earned;
+  totalEarned   += earned;
+  if (totalEarned > allTimeRecord) allTimeRecord = totalEarned;
   state[i].progress = 0;
   state[i].ready    = false;
 
   sounds.collect();
+  earnedThisMinute += earned;
+  checkAchievements();
+  updatePrestigeBtn();
   if (event) spawnFloat(event.clientX, event.clientY, '+' + fmt(earned));
 
   updateHeader();
@@ -826,17 +2626,77 @@ function refreshActions(i) {
   }
   el.appendChild(cBtn);
 
-  const bBtn = document.createElement('button');
-  bBtn.className = 'btn btn-buy';
-  bBtn.textContent = '+1  ' + fmt(buyCost(i));
-  bBtn.disabled = money < buyCost(i);
-  bBtn.onclick = () => {
-    if (money < buyCost(i)) return;
-    money -= buyCost(i); state[i].count++;
-    sounds.buy();
-    updateHeader(); refreshCard(i); updateBuyButtons();
-  };
-  el.appendChild(bBtn);
+  const atMax = s.count >= 1000;
+
+  // кнопки x1, x10, x100
+  [1, 10, 100].forEach(amount => {
+    const realAmt = Math.min(amount, 1000 - s.count);
+    const cost = (() => {
+      let total = 0;
+      for (let j = 0; j < realAmt; j++)
+        total += Math.floor(DEFS[i].baseCost * Math.pow(1.07, s.count + j));
+      return total;
+    })();
+
+    const btn = document.createElement('button');
+    btn.className = 'btn btn-buy';
+    btn.textContent = atMax ? '✅' : `+${amount}  ${fmt(cost)}`;
+    btn.disabled = atMax || realAmt === 0 || (isFinite(money) && money < cost);
+    btn.onclick = () => {
+      const ra = Math.min(amount, 1000 - state[i].count);
+      if (ra === 0) return;
+      let c = 0;
+      for (let j = 0; j < ra; j++)
+        c += Math.floor(DEFS[i].baseCost * Math.pow(1.07, state[i].count + j));
+      if (isFinite(money) && money < c) return;
+      if (isFinite(money)) money -= c;
+      state[i].count += ra;
+      sounds.buy();
+      checkAchievements();
+      updateHeader(); refreshCard(i); updateBuyButtons();
+    };
+    el.appendChild(btn);
+  });
+
+  // кнопка MAX
+  if (!atMax) {
+    const maxBtn = document.createElement('button');
+    maxBtn.className = 'btn btn-buy';
+    maxBtn.style.background = '#1a3a1a';
+    maxBtn.style.color = '#4caf50';
+    maxBtn.style.borderColor = '#2a6a2a';
+
+    const calcMax = () => {
+      let total = 0, count = state[i].count, spent = 0;
+      while (count < 1000) {
+        const c = Math.floor(DEFS[i].baseCost * Math.pow(1.07, count));
+        if (isFinite(money) && spent + c > money) break;
+        spent += c; count++; total++;
+        if (!isFinite(money) && total >= 1000 - state[i].count) break;
+      }
+      return { amount: total, cost: spent };
+    };
+
+    const { amount, cost } = calcMax();
+    maxBtn.textContent = amount > 0 ? `MAX +${amount}  ${fmt(cost)}` : 'MAX';
+    maxBtn.disabled = amount === 0;
+
+    maxBtn.onclick = () => {
+      const { amount: a, cost: c } = calcMax();
+      if (a === 0) return;
+      if (isFinite(money)) money -= c;
+      state[i].count += a;
+      sounds.buy();
+      spawnFloat(
+        maxBtn.getBoundingClientRect().left + 40,
+        maxBtn.getBoundingClientRect().top,
+        `+${a} ${t.bizNames[i]}`
+      );
+      checkAchievements();
+      updateHeader(); refreshCard(i); updateBuyButtons();
+    };
+    el.appendChild(maxBtn);
+  }
 
   if (s.count > 0) {
     const uBtn = document.createElement('button');
@@ -847,6 +2707,7 @@ function refreshActions(i) {
       if (money < upgradeCost(i)) return;
       money -= upgradeCost(i); state[i].upgrades++;
       sounds.upgrade();
+      checkAchievements();
       updateHeader(); refreshCard(i); updateBuyButtons();
     };
     el.appendChild(uBtn);
@@ -861,6 +2722,7 @@ function refreshActions(i) {
       if (money < def.managerCost) return;
       money -= def.managerCost; state[i].hasManager = true;
       sounds.manager();
+      checkAchievements();
       if (state[i].ready) collect(i, null);
       updateHeader(); refreshCard(i); updateBuyButtons();
     };
@@ -880,13 +2742,14 @@ function updateBuyButtons() { DEFS.forEach((_, i) => refreshActions(i)); }
 
 function updateHeader() {
   document.getElementById('money-display').textContent = fmt(money);
-  document.getElementById('ps-display').textContent    = fmt(totalPerSecond()) + t.perSec;
+  document.getElementById('ps-display').textContent    = isAdmin() ? '∞' + t.perSec : fmt(totalPerSecond()) + t.perSec;
 }
 
 // ── Утилиты ───────────────────────────────────────────────
 function getCard(i) { return document.getElementById('card-' + i); }
 
 function fmt(n) {
+  if (!isFinite(n)) return '∞';
   if (n >= 1e15) return '$' + (n/1e15).toFixed(2) + 'Qa';
   if (n >= 1e12) return '$' + (n/1e12).toFixed(2) + 'T';
   if (n >= 1e9)  return '$' + (n/1e9 ).toFixed(2) + 'B';
@@ -907,15 +2770,28 @@ function spawnFloat(x, y, text) {
 // ── Сохранение ────────────────────────────────────────────
 function buildSaveData() {
   return {
-    money, totalEarned,
+    money: isFinite(money) ? money : 'inf', totalEarned, allTimeRecord, timePlayed, prestigeCount, privateProfile,
+    name: playerName, photoURL: playerPhoto || '',
+    lastSeen: Date.now(),
+    achievements: [...unlockedAch],
     state: state.map(s => ({ count: s.count, upgrades: s.upgrades, hasManager: s.hasManager, progress: s.progress, ready: s.ready }))
   };
 }
 
 function applySaveData(d) {
-  money       = d.money       || 10;
-  totalEarned = d.totalEarned || 0;
-  (d.state || []).forEach((sv, i) => { if (state[i]) Object.assign(state[i], sv); });
+  money         = isAdmin() ? Infinity : (d.money === 'inf' ? Infinity : (d.money || 10));
+  totalEarned   = isAdmin() ? Infinity : (d.totalEarned || 0);
+  allTimeRecord = isAdmin() ? Infinity : (d.allTimeRecord || 0);
+  privateProfile = d.privateProfile || false;
+  timePlayed    = d.timePlayed    || 0;
+  prestigeCount = d.prestigeCount || 0;
+  unlockedAch   = new Set(d.achievements || []);
+  (d.state || []).forEach((sv, i) => {
+    if (state[i]) {
+      Object.assign(state[i], sv);
+      if (state[i].count > 1000) state[i].count = 1000;
+    }
+  });
 }
 
 function save() {
@@ -965,7 +2841,7 @@ async function submitScore() {
     const res = await fetch(`${DB_URL}/leaderboard/${playerId}.json`, {
       method:  'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify({ name: playerName, score: Math.floor(totalEarned), ts: Date.now() }),
+      body:    JSON.stringify({ name: playerName, score: isAdmin() ? 0 : Math.floor(allTimeRecord), ts: Date.now() }),
     });
     if (!res.ok) throw new Error('HTTP ' + res.status);
     if (statusEl) statusEl.textContent = t.lbSent;
@@ -997,20 +2873,134 @@ async function loadLeaderboard() {
 
     const medals = ['🥇','🥈','🥉'];
     listEl.innerHTML = entries.map((e, idx) => `
-      <div class="lb-row ${e.id === playerId ? 'lb-me' : ''}">
+      <div class="lb-row ${e.id === playerId ? 'lb-me' : ''}" data-uid="${e.id}" style="cursor:pointer">
         <span class="lb-rank">${medals[idx] || (idx + 1) + '.'}</span>
         <span class="lb-name">${e.name}${e.id === playerId ? ' 👈' : ''}</span>
         <span class="lb-score">${fmt(e.score)}</span>
       </div>
     `).join('');
+    listEl.querySelectorAll('.lb-row').forEach((row, idx) => {
+      const e = entries[idx];
+      row.onclick = () => openProfileById(e.id, { name: e.name, totalEarned: e.score });
+    });
   } catch(e) {
     listEl.innerHTML = '<div class="lb-empty">❌ ' + e.message + '</div>';
   }
 }
 
+// ── Профиль ───────────────────────────────────────────────
+function setProfileTitle(uid, data) {
+  const el = document.getElementById('profile-title');
+  if (!el) return;
+  const parts = [];
+  if (uid === playerId && isAdmin()) parts.push('🛡️ Admin');
+  const titleAch = ACHIEVEMENTS.find(a => a.id === 'world_richest');
+  const hasWorld = (data.achievements || []).includes('world_richest') ||
+                   (uid === playerId && unlockedAch.has('world_richest'));
+  if (hasWorld) parts.push(titleAch.title[currentLang] || titleAch.title.ru);
+  if (parts.length) {
+    el.textContent = parts.join('  ');
+    el.style.display = 'block';
+  } else {
+    el.textContent = '';
+    el.style.display = 'none';
+  }
+}
+
+function renderProfile(data, uid) {
+  if (data.privateProfile) {
+    const isOnline = data.lastSeen && (Date.now() - data.lastSeen) < 5 * 60 * 1000;
+    document.getElementById('profile-avatar-wrap').innerHTML = `<div class="profile-avatar-initials">🔒</div>`;
+    document.getElementById('profile-name-text').textContent = data.name || 'Игрок';
+    // показываем звание даже в скрытом профиле
+    setProfileTitle(uid, data);
+    const st = document.getElementById('profile-status-text');
+    st.className = 'profile-status ' + (isOnline ? 'status-online' : 'status-offline');
+    st.textContent = isOnline ? t.online : t.offline;
+    document.getElementById('profile-stats').innerHTML = `<div style="grid-column:1/-1;text-align:center;color:#555;padding:20px">🔒 Профиль скрыт</div>`;
+    document.getElementById('profile-biz-list').innerHTML = '';
+    document.querySelector('.profile-biz-title').textContent = '';
+    document.getElementById('profile-overlay').classList.add('open');
+    return;
+  }
+  const isOnline = data.lastSeen && (Date.now() - data.lastSeen) < 5 * 60 * 1000;
+  const isMe     = uid === playerId;
+
+  // аватар
+  const avatarWrap = document.getElementById('profile-avatar-wrap');
+  if (data.photoURL) {
+    avatarWrap.innerHTML = `<img class="profile-avatar" src="${data.photoURL}" alt="avatar">`;
+  } else {
+    const initial = (data.name || '?')[0].toUpperCase();
+    avatarWrap.innerHTML = `<div class="profile-avatar-initials">${initial}</div>`;
+  }
+
+  document.getElementById('profile-name-text').textContent = data.name || 'Игрок';
+
+  setProfileTitle(uid, data);
+
+  const statusEl = document.getElementById('profile-status-text');
+  statusEl.className = 'profile-status ' + (isOnline ? 'status-online' : 'status-offline');
+  statusEl.textContent = isOnline ? t.online : t.offline;
+
+  // статистика
+  const bizCount = (data.state || []).reduce((s, b) => s + (b.count || 0), 0);
+  document.getElementById('profile-stats').innerHTML = `
+    <div class="stat-box"><div class="stat-value">${fmt(data.totalEarned || 0)}</div><div class="stat-label">${t.statEarned}</div></div>
+    <div class="stat-box"><div class="stat-value">${formatTime(data.timePlayed || 0)}</div><div class="stat-label">${t.statTime}</div></div>
+    <div class="stat-box"><div class="stat-value">${bizCount}</div><div class="stat-label">${t.statBiz}</div></div>
+    <div class="stat-box"><div class="stat-value">${fmt(data.allTimeRecord || data.totalEarned || 0)}</div><div class="stat-label">${t.statRecord}</div></div>
+    <div class="stat-box" style="grid-column:1/-1"><div class="stat-value">⭐ ${data.prestigeCount || 0} <span style="font-size:0.85rem;color:#aaa">× x${(1 + (data.prestigeCount||0) * 0.5).toFixed(1)}</span></div><div class="stat-label">${t.prestigeTitle}</div></div>
+  `;
+
+  // бизнесы
+  document.querySelector('.profile-biz-title').textContent = t.profileBizTitle;
+  document.getElementById('profile-close-btn').textContent = t.profileClose;
+  const bizList = document.getElementById('profile-biz-list');
+  bizList.innerHTML = DEFS.map((def, i) => {
+    const s = (data.state || [])[i] || { count: 0, upgrades: 0 };
+    return `
+      <div class="profile-biz-row ${s.count === 0 ? 'locked' : ''}">
+        <span class="profile-biz-icon">${def.icon}</span>
+        <span class="profile-biz-name">${t.bizNames[i]}</span>
+        <span class="profile-biz-cnt">x${s.count}</span>
+        <span class="profile-biz-lvl">${t.lvl}${s.upgrades + 1}</span>
+      </div>
+    `;
+  }).join('');
+
+
+  document.getElementById('profile-overlay').classList.add('open');
+}
+
+async function openProfileById(uid, fallback = {}) {
+  if (uid === playerId) {
+    renderProfile({ ...buildSaveData(), name: playerName, photoURL: playerPhoto }, uid);
+    return;
+  }
+  try {
+    const res  = await fetch(`${DB_URL}/saves/${uid}.json`);
+    const data = res.ok ? await res.json() : null;
+    const d    = data || fallback;
+    // если профиль скрыт — показываем только имя и статус
+    if (d.privateProfile) {
+      const isOnline = d.lastSeen && (Date.now() - d.lastSeen) < 5 * 60 * 1000;
+      renderProfile({ name: d.name || fallback.name, lastSeen: d.lastSeen, privateProfile: true, photoURL: '' }, uid);
+      return;
+    }
+    renderProfile(d, uid);
+  } catch(e) {
+    renderProfile(fallback, uid);
+  }
+}
+
+function closeProfile() {
+  document.getElementById('profile-overlay').classList.remove('open');
+}
+
 function openLeaderboard() {
   document.getElementById('lb-myname').textContent      = '👤 ' + playerName;
-  document.getElementById('lb-myscore-val').textContent = fmt(totalEarned);
+  document.getElementById('lb-myscore-val').textContent = fmt(allTimeRecord);
   document.getElementById('lb-overlay').classList.add('open');
   loadLeaderboard();
 }
@@ -1033,6 +3023,64 @@ document.getElementById('lb-overlay').onclick = (e) => {
 };
 
 // ── Настройки ─────────────────────────────────────────────
+document.getElementById('online-btn').onclick  = openOnlineList;
+document.getElementById('online-close-btn').onclick = closeOnlineList;
+document.getElementById('online-overlay').onclick = (e) => { if (e.target === document.getElementById('online-overlay')) closeOnlineList(); };
+document.querySelectorAll('.theme-btn').forEach(b => { b.onclick = () => applyTheme(b.dataset.theme); });
+document.getElementById('mail-btn').onclick        = () => openMail();
+document.getElementById('mail-close-btn').onclick  = closeMail;
+document.getElementById('mail-overlay').onclick    = (e) => { if (e.target === document.getElementById('mail-overlay')) closeMail(); };
+document.getElementById('mail-send-btn').onclick   = sendMailMessage;
+document.getElementById('admin-btn').onclick       = openAdminPanel;
+document.getElementById('admin-close-btn').onclick = closeAdminPanel;
+document.getElementById('admin-overlay').onclick   = (e) => {
+  if (e.target === document.getElementById('admin-overlay')) closeAdminPanel();
+};
+document.getElementById('admin-send-event-btn').onclick = adminSendEvent;
+document.getElementById('admin-stop-event-btn').onclick = adminStopEvent;
+document.getElementById('admin-hide-profile').onchange = (e) => {
+  privateProfile = e.target.checked;
+  save(); saveToCloud();
+};
+document.getElementById('admin-send-global-msg-btn').onclick = async () => {
+  const text = document.getElementById('admin-global-msg-input').value.trim();
+  if (!text) return;
+  await fetch(`${DB_URL}/global_messages/${genMsgId()}.json`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ fromName: playerName, text, ts: Date.now() }),
+  });
+  document.getElementById('admin-global-msg-input').value = '';
+  alert('Сообщение отправлено всем!');
+};
+document.getElementById('admin-reset-btn').onclick = () => {
+  if (!confirm('Точно сбросить ВЕСЬ прогресс?')) return;
+  localStorage.removeItem('bizempire2');
+  fetch(`${DB_URL}/saves/${playerId}.json`, { method: 'DELETE' });
+  location.reload();
+};
+document.getElementById('history-btn').onclick     = openHistory;
+document.getElementById('history-close-btn').onclick = closeHistory;
+document.getElementById('history-overlay').onclick = (e) => {
+  if (e.target === document.getElementById('history-overlay')) closeHistory();
+};
+document.getElementById('prestige-btn').onclick    = openPrestige;
+document.getElementById('prestige-cancel-btn').onclick = closePrestige;
+document.getElementById('prestige-do-btn').onclick     = doPrestige;
+document.getElementById('prestige-overlay').onclick    = (e) => {
+  if (e.target === document.getElementById('prestige-overlay')) closePrestige();
+};
+document.getElementById('ach-btn').onclick      = openAchievements;
+document.getElementById('ach-close-btn').onclick = closeAchievements;
+document.getElementById('ach-overlay').onclick   = (e) => {
+  if (e.target === document.getElementById('ach-overlay')) closeAchievements();
+};
+document.getElementById('profile-btn').onclick = () => openProfileById(playerId);
+document.getElementById('profile-close-btn').onclick = closeProfile;
+document.getElementById('profile-overlay').onclick = (e) => {
+  if (e.target === document.getElementById('profile-overlay')) closeProfile();
+};
+
 document.getElementById('settings-btn').onclick = () => {
   document.getElementById('settings-overlay').classList.add('open');
 };
