@@ -598,6 +598,18 @@
     .btn-ach-close:hover { background: #1a5a9a; }
 
     /* ===== ПРЕСТИЖ ===== */
+    #update-timer-block {
+      display: flex; flex-direction: column; align-items: center;
+      background: #1a0a2a; border: 1px solid #bb86fc;
+      border-radius: 8px; padding: 4px 10px; line-height: 1.3;
+    }
+    #update-label {
+      font-size: 0.65rem; font-weight: bold; color: #bb86fc; letter-spacing: 0.5px;
+    }
+    #update-countdown {
+      font-size: 0.85rem; font-weight: bold; color: #ffd700; font-variant-numeric: tabular-nums;
+    }
+
     #prestige-btn {
       background: linear-gradient(135deg, #7c3aed, #a855f7);
       color: #fff; border: none; border-radius: 8px;
@@ -970,6 +982,10 @@
   <button id="mail-btn">📬<span id="mail-badge"></span></button>
   <button id="admin-btn">🛡️ Admin</button>
   <button id="history-btn">📊</button>
+  <div id="update-timer-block">
+    <span id="update-label">🆕 Update</span>
+    <span id="update-countdown">--:--:--</span>
+  </div>
   <button id="prestige-btn">⭐ Престиж</button>
   <button id="ach-btn" title="Достижения">🏅</button>
   <button id="settings-btn">⚙️</button>
@@ -997,12 +1013,22 @@
 
     <!-- Событие -->
     <div class="admin-section">
-      <h3>📢 Событие для всех</h3>
+      <h3>⚡ Событие для всех</h3>
       <div class="admin-input-row">
-        <select class="admin-input" id="admin-event-type">
-          <option value="double_income">💰 Двойной доход (10 мин)</option>
-          <option value="triple_income">⚡ Тройной доход (5 мин)</option>
-          <option value="free_money">🎁 Дать всем $1M</option>
+        <select class="admin-input" id="admin-boost-mult">
+          <option value="2">💰 x2</option>
+          <option value="3">⚡ x3</option>
+          <option value="5">🔥 x5</option>
+          <option value="10">💎 x10</option>
+          <option value="100">🚀 x100</option>
+        </select>
+        <select class="admin-input" id="admin-boost-hours">
+          <option value="1">1 час</option>
+          <option value="2">2 часа</option>
+          <option value="3">3 часа</option>
+          <option value="6">6 часов</option>
+          <option value="12">12 часов</option>
+          <option value="24">24 часа</option>
         </select>
         <button class="btn-admin-action purple" id="admin-send-event-btn">Отправить</button>
       </div>
@@ -1790,7 +1816,8 @@ function showEventBanner() {
   el.id = 'event-banner';
   const remaining = Math.ceil((activeEvent.startedAt + activeEvent.duration * 1000 - Date.now()) / 60000);
   const labels = { double_income: '💰 Двойной доход!', triple_income: '⚡ Тройной доход!', free_money: '🎁 Всем $1M!' };
-  el.textContent = (labels[activeEvent.type] || '🎉 Событие!') + ' ещё ' + remaining + ' мин';
+  const label = activeEvent.type === 'boost' ? `🚀 x${activeEvent.mult} доход!` : (labels[activeEvent.type] || '🎉 Событие!');
+  el.textContent = label + ' ещё ' + remaining + ' мин';
   document.body.appendChild(el);
 }
 
@@ -1801,6 +1828,7 @@ function removeEventBanner() {
 function eventMultiplier() {
   if (!activeEvent) return 1;
   if (activeEvent.startedAt + activeEvent.duration * 1000 < Date.now()) { activeEvent = null; return 1; }
+  if (activeEvent.type === 'boost') return activeEvent.mult || 1;
   if (activeEvent.type === 'double_income') return 2;
   if (activeEvent.type === 'triple_income') return 3;
   return 1;
@@ -1874,12 +1902,12 @@ async function adminDeletePlayer(uid, name) {
 }
 
 async function adminSendEvent() {
-  const type = document.getElementById('admin-event-type').value;
-  const durations = { double_income: 600, triple_income: 300, free_money: 1 };
+  const mult  = parseInt(document.getElementById('admin-boost-mult').value);
+  const hours = parseInt(document.getElementById('admin-boost-hours').value);
   await fetch(`${DB_URL}/events/active.json`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ type, duration: durations[type], startedAt: Date.now() }),
+    body: JSON.stringify({ type: 'boost', mult, duration: hours * 3600, startedAt: Date.now() }),
   });
   await checkActiveEvent();
   alert('Событие отправлено!');
@@ -2322,7 +2350,7 @@ function updatePrestigeBtn() {
 }
 
 function openPrestige() {
-  const nextMult = 1 + (prestigeCount + 1) * 0.5;
+  const nextMult = 1 + (prestigeCount + 1) * 1.0;
   document.getElementById('prestige-title').textContent      = t.prestigeTitle;
   document.getElementById('prestige-lbl-level').textContent  = t.prestigeLevel;
   document.getElementById('prestige-lbl-mult').textContent   = t.prestigeMult;
@@ -2428,8 +2456,8 @@ const DEFS = [
   { id:7, name:'Медиахолдинг', icon:'📺', baseCost:180e6,    baseTime:192, baseIncome:12600000, managerCost:250000000 },
 ];
 
-const MILESTONES     = [10, 25, 50, 100, 200];
-const MILESTONE_MULT = [2,  4,  8,  16,  32 ];
+const MILESTONES     = [10,  25,  50,  100,  200,  300,  400,  500,  750,  1000];
+const MILESTONE_MULT = [2,   4,   8,   16,   32,   64,   128,  256,  512,  1024];
 
 // ── Состояние ─────────────────────────────────────────────
 let money         = 10;
@@ -2437,7 +2465,7 @@ let totalEarned   = 0;
 let allTimeRecord = 0;   // не сбрасывается после престижа
 let prestigeCount = 0;
 
-function prestigeMultiplier() { return 1 + prestigeCount * 0.5; }
+function prestigeMultiplier() { return 1 + prestigeCount * 1.0; }
 
 const state = DEFS.map(() => ({
   count: 0, upgrades: 0, hasManager: false, progress: 0, ready: false,
@@ -3129,6 +3157,29 @@ document.querySelectorAll('.lang-btn').forEach(btn => {
 setInterval(() => {
   if (playerId && totalEarned > 0) submitScore().catch(() => {});
 }, 120000);
+
+// ── Таймер обновления (завтра в 20:00) ────────────────────
+function getUpdateTarget() {
+  const now = new Date();
+  const target = new Date(now);
+  target.setDate(now.getDate() + 1);
+  target.setHours(20, 0, 0, 0);
+  return target;
+}
+
+function tickUpdateTimer() {
+  const el = document.getElementById('update-countdown');
+  if (!el) return;
+  const diff = getUpdateTarget() - Date.now();
+  if (diff <= 0) { el.textContent = '00:00:00'; return; }
+  const h = Math.floor(diff / 3600000);
+  const m = Math.floor((diff % 3600000) / 60000);
+  const s = Math.floor((diff % 60000) / 1000);
+  el.textContent = String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+}
+
+tickUpdateTimer();
+setInterval(tickUpdateTimer, 1000);
 </script>
 </body>
 </html>
