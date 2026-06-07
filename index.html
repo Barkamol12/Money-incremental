@@ -3160,9 +3160,7 @@ setInterval(() => {
 
 // ── Таймер обновления (завтра в 20:00) ────────────────────
 function getUpdateTarget() {
-  const now = new Date();
-  const target = new Date(now);
-  target.setDate(now.getDate() + 1);
+  const target = new Date();
   target.setHours(20, 0, 0, 0);
   return target;
 }
